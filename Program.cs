@@ -1,9 +1,14 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.ComponentModel.DataAnnotations;
+using System.Drawing;
+using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
-
-p5();
 void p1a() {
     var data = @"9524
 12618
@@ -11471,6 +11476,4176 @@ move 1 from 3 to 9";
         stacks.Select(s => s.Last()).ToList().ForEach(Console.Write);
     }
 }
+void p6() {
+    var data = @"mzrzqrzqrrmcmgmrggvjvcczbczccdwdcwcpwwclwwbttdntnsnllpggqhgqgzqggvjjjfqfhhbbvzvmzvvfccnznwntnptpgpcplpwwvgvzvvcgvvbcvcqqhnqqbsbdsbbbgtgvtgvtgvvrfvvjbjcbcchnhrhvvrmmwzwzmwmggjwwwwzrrmbmbmbrrdjrjfrrrmrffzgghtggwddtllhchdhsshjjwfwsfssnbbnjncczsczzvpvssljsjgsjgjcgjggspsfsfhfppsqqzlzjllblsldsldlndnhnffflwfwmwssvzzvqzzblzbbmrrfnrrqnnhfnnhphbhrrlvrlvrvcrrltrtmrrcscchdhqhfffrddzsszwwrbrfftddbwwtdtnndrrghgcgfgrglllcdcsswvwsvszsddjwdwwcvwvmvhhlqlddbhbrrnddpqpttrtctmcmjjtvjjfvvlcldltdtdqdllnrncrnrznzfnfsfnndqqbhhlnhhhsmhhfghgppflllrhhvdddvrvnrnpplwplldttswsbwwtbbvwbwnnhcczmczmczclcttwcchllmsmbbrvbbsjsswbwwbtwtgtrgtrgrnggqwgwmwrmrqmmghhtbbrppjmpppjtjtffvqvbbwsspzsstlstltrrtmtrmrzmmgqqgmmpzmpzpmmgnnrjjgrjjhgjjsccjllwzzsddznnrsrttdllcnntvnttqjjqljqqwlqlmmfdfttzzvgvtvjjwvwsvvhbhrbhbwbzbppbplphpjpzppljjnttnvnggqbqffqgqrrjwjcjllcblbqqglqgqjqrrffjqqqcvqccgrgqgrqrnqqhphccvwwsgspprmprrwdrwrdwdrwrwswbsbcctscttwvvvstvthtrhhddtppgwwqpwwzpzgzszgzvggzqqmbqqrqsrqrmmjjfggztzdzvvqdqzddrrnmmtccsstdsdrrmrnnzzpggbmbqbcbzczppbjbssfzfcfvcvlclgcglcgllvclcwwwpmwwjrrgtrtfrrnznssvvrjvrjrgjrrcsrrstrsrhrpplfljjwrwbbffdpfpzffrhhjrjdrrgpggbhhschcdcdcqcnncjcvjcvjvbvcbvbssnhhsddclcrcrjrdrtdtqdqrddddlcdcttzzlslblbqqcmmdgmmsnmnmccqmmljjncnhnchcdchddwsdssdrsscfcnffcqfqtfqqjcjrrvbrvvhsvvlqlwwsccjbbgpgzgcgbgzgccpvcpvpddqrrqfqtqrqqcjjwvwttrwwblwlrwllnsshdhqdhqqjllzlflvlgllhnllstsbbdqqpnpwpmwwzhzvzcclcvcfvcvssdcdvdpphcphcppffndfnfmfbfwwgzwwwvhwwmcwwwtmtgtvggvbggzzthzzlbzbzmmhlllvgllmfmpmbbldbdnnzzjcctvvsdvssrpsslglqggcchvcvllzhhbcczjjgllvqlvlflglwwscctfcbmdjhgwtfhjrgvvvrmdcpsrtsnvhwnnznnnmrhcnlnmjvdbqztspwbdwlttdtwlwdvqjpgqdzbnssglqczqwvfgdlbdmsbbmggjdhddzvzlqhrggvvccmcmtqdmmpqvvstmqgvntdsmjbzbwstdrmjjmzfgmczjrftwrwnfbdmlddvzdfwwztldqfvdswfdwrfcgptmmjnzngwnflzlvtwpdsvllfwqjnjjjbfcwmgrvlhdvpgprnjthlqlbtlhflzwqjwtqtdzcvqbgtjlnmwchpjrgfndrnzwctjwvwsvflmgnqmplhhwljqcshqqldcnfrdbdcbslrtbnqrvhhjrddmjbtmcjzlqcdcqbfftsmpdpnfrjjwmdpmrvjjmppbnmcbvnzbphjcjlldnpdcwsqfgpmbszvjbpzngvncbfncpmghfrsssrnbbmhnjjvgmjzwtwlpszphgwvtjzdsmvvhnrplmnrllvqvphtbbrnlwmffdmmbhvzfcnbnlbspfwbcbjwgpnbsfpfbdqbnpfcqpngfqwlwcgrzlvfqgfsbppgmfzgjdntdvzvzclbrfwpqmvgmtmppsjzjhqbgjnntdnwvwljndqbtfgrjcfnlpsgsmbdljdzqfclgwhdgndzwbcthmrgzcjbhrrltlsznbsvswtsjbhwqzwchwzbtqmnrqfrzspwrqwwqwvczmntwggltjmvwdftplrgtrltmpvvgslvhctnwwcgtblmqtnsmqdgcbvzlcbrrsstzgzrgzgtmqtvsnzqqwlfgrjbdsvpdjpgmmczddbptwvpthvdjvrpqsbbgctrpqsdnczzbttdrbflrllrnvjswslnghdqfqlnbcctwbnpvspfmrcnprpjzgwsdwlszzpdcgvzjsjtdgjnpwgtqmvsmsvzddcmfwtqjghrrrmvcjbccgrngcvvfvrrmmqmzsvhdqsfqpqnnhhpffrtblnzhwqmsgvvzvgpbczsznzlnvsgjjzqbpjmvpjzqqpzpvplwsvgtwvrhlvggrpvztvchbcwflwhwmvdslvhsgpcqhdhcpvclgmzdngsmbplzrqgwflltzgsglflhqhpnnfszvtgprqhnjlrvwfsjfpcjzbznsprtldvwjlnhqsdlfnwtlpzldfpnjpnnqfgqqrjrnszznlrjgwwlnbbznzcshtfqcprphgsldtgzzgqjvmjrtfhmgptrnqzmtfclqwgprvjptntgwhbqwhdjcfjtrmdwbslhqwgtcqwhjhhmltrlsqbvzqsjqsczvsqlsjdgmnjnpvmmwbsfnfnshmlrdgslbfrnhmdgcjgsqgwlbmlhhnfmcfnswmwgrzmpdmtrcmwgjlgrhzchmhmbjgjrfgdvplvngjnfdrscwqtnsspdszznnnjrdmvwbvnzmmddbcvsphfqsbcmfmfgrcdfjptzqfsjsmjtbswtqzvtfpwbvqsgjzftfssdmcngtgbfmrrsjtllnpsztvgbpgpcrmqsgvcjrpprhqzjwlcdjpvgrqtjcglwnvzvqtncmndzbgpgfbprpqqjfbnzhfzlfrgnfnbpjfrbtjgrgvmczthqsbfplnzvhqjmrrssnzjdhfvlngwptzzdshzhzfpzhmrcjmdvlnlqtsnlbhqgplsltgznshthcwnpzpcgjjwhjstfcdtmmnvbgqzrjpsqwlmlbjnqtrfmbrdsbdlrrwqqvzdnmzhzvrhdftzldzjrtfgzlrwczbzzzqtthdcjtqpcfdwpqlzqmrnsnhwbzhjnqjzgfdcdcrqsjfhpjcdtwnvwzzbwfgdzcmmfvdvdpjsltcrbfqczvvbjscptjsvzndgwhzfjcqljndrcqzhssnqtmjmwjrsqdpqnhwsntqnmrwhvsnvrvpvwbndpmgsnchtnzpjgshcvjgwlwdhqbqhvcwqmwllhcgvbslqvwgswvnsqvvcphbglrvlsczcscznlwzrvjptmbmrgjlhvbrlghcwjdqjlgrcbrhfmbcwgclqzllqtmshbjnhwpgsgtljbwhgcsznvslmglcnmmgjlsptgdqlbtclfbfvjpmqgwwbcvwtdhgjlpvgggjjvmltdgzjdsvtswgblgfcvdvtwrrfljtqjhdflhbtwmcdqpmdqrtjsvdhzstfnqjrzztnwslvwtvgvzfqlzfrhnthjfpvmwmdgrtzhbtwdfscdpwmwwrhgbmqrdftvjvrgzhbpqtqvvlwbmbvlszzqjwhtvwnsjcdcgdlwlrtvjsdqzngcdtpvsddsbqbhtrrpwqdhvdmnnncgccszqtbcgwbdbwrnwrhpwprslbmhrmwpmqzvssfzvrmwrmrzmhrcwvbdtvdflgmrghqngwsgrnctsnhpnmcmfmrtszttqtvvlhdjgplvgnjrtgnfgmdtvwzmzbtzvmhdvpcjqvgpsmdcfrbmqbrlsnccldrfdldqfnsfzznqtvsgwbljgrvbdmggdmhvvdzjfllzwzpddcnvrfggsddqmczfnnfvrwsmvfctctjqdrhvlntflccqgzg";
+    Console.WriteLine(Enumerable.Range(0, data.Length).First(i =>
+        data[i..(i + 4)].Distinct().Count() == 4
+    ) + 4);
+    Console.WriteLine(Enumerable.Range(0, data.Length).First(i =>
+        data[i..(i + 14)].Distinct().Count() == 14
+    ) + 14);
+}
+void p7() {
+    var data = @"$ cd /
+$ ls
+dir gts
+68377 jvdqjhr.jvp
+dir lwhbw
+228884 nqth.gcn
+dir pcqjnl
+94844 ppwv.zsh
+97889 rqpw
+dir sqhw
+dir vllgn
+dir wdtm
+dir ztfdwp
+$ cd gts
+$ ls
+846 grwwbrgz.wft
+72000 mrnhn.psz
+155241 qvnbd.dqs
+6655 tndtmwfv
+$ cd ..
+$ cd lwhbw
+$ ls
+99946 lrrl.lth
+$ cd ..
+$ cd pcqjnl
+$ ls
+76420 gdg.lvr
+dir gljcvm
+161390 hlnrq.mjj
+dir lqwntmdg
+dir lrrl
+dir qgpr
+222006 tndtmwfv
+$ cd gljcvm
+$ ls
+264381 tmwzlzn
+$ cd ..
+$ cd lqwntmdg
+$ ls
+dir jjfwr
+dir rfqbmb
+$ cd jjfwr
+$ ls
+dir cfhjvmh
+$ cd cfhjvmh
+$ ls
+dir gzfgc
+$ cd gzfgc
+$ ls
+134989 cfhjvmh.wwh
+$ cd ..
+$ cd ..
+$ cd ..
+$ cd rfqbmb
+$ ls
+dir cbrvhz
+dir flcw
+dir mnd
+$ cd cbrvhz
+$ ls
+131072 wdtm.rjr
+$ cd ..
+$ cd flcw
+$ ls
+216675 wlfwpb.wpg
+$ cd ..
+$ cd mnd
+$ ls
+28976 hzzzzvmr.lsz
+$ cd ..
+$ cd ..
+$ cd ..
+$ cd lrrl
+$ ls
+dir cpmvnf
+dir dcfmtw
+dir ggnwqcj
+7864 lgsc.smg
+42042 mjfdjrgt
+dir mrnhn
+258288 nqth.gcn
+dir nwjggvr
+249578 qfnnncr.ftw
+dir sqpgr
+dir wgpqg
+3196 wtpmdqhd.snd
+$ cd cpmvnf
+$ ls
+dir srtqvcv
+$ cd srtqvcv
+$ ls
+dir mrnhn
+$ cd mrnhn
+$ ls
+dir fbrwd
+$ cd fbrwd
+$ ls
+163166 nqth.gcn
+$ cd ..
+$ cd ..
+$ cd ..
+$ cd ..
+$ cd dcfmtw
+$ ls
+31712 mrnhn.tgg
+dir nzpdtfr
+dir sntcbctt
+dir vzhvjp
+dir wdtm
+$ cd nzpdtfr
+$ ls
+dir qwtwps
+130527 rhhlfg.tcj
+160893 rwbwp.rmr
+dir vcthd
+$ cd qwtwps
+$ ls
+dir cmf
+$ cd cmf
+$ ls
+73595 wdsjg.thm
+$ cd ..
+$ cd ..
+$ cd vcthd
+$ ls
+15016 cfhjvmh
+$ cd ..
+$ cd ..
+$ cd sntcbctt
+$ ls
+dir lrrl
+dir mjfdjrgt
+dir npqj
+$ cd lrrl
+$ ls
+258433 clgfwbb.htg
+166151 fbt.cnp
+$ cd ..
+$ cd mjfdjrgt
+$ ls
+64472 csphnrqr
+222554 fbt.cnp
+30487 vqb.grr
+$ cd ..
+$ cd npqj
+$ ls
+154071 mtn.pjq
+185929 nqth.gcn
+$ cd ..
+$ cd ..
+$ cd vzhvjp
+$ ls
+161341 mrnhn.wvw
+$ cd ..
+$ cd wdtm
+$ ls
+224565 cdd
+dir jrswcjq
+dir smgbdw
+$ cd jrswcjq
+$ ls
+173122 blm.znb
+$ cd ..
+$ cd smgbdw
+$ ls
+307533 cfhjvmh.ppp
+$ cd ..
+$ cd ..
+$ cd ..
+$ cd ggnwqcj
+$ ls
+dir bfjvt
+146815 fbt.cnp
+279655 nljrr
+152735 qpv
+$ cd bfjvt
+$ ls
+193338 qlfcz
+238188 qnz.llm
+$ cd ..
+$ cd ..
+$ cd mrnhn
+$ ls
+dir cfhjvmh
+dir cjsrvg
+32604 fbt.cnp
+231569 fpjfth.mmc
+dir hghjzpgc
+270425 mjfdjrgt.fdt
+273944 mjfdjrgt.twj
+141791 ztswsbs.pjs
+$ cd cfhjvmh
+$ ls
+306620 lrrl.mgd
+$ cd ..
+$ cd cjsrvg
+$ ls
+303619 dffrqscq.nct
+16738 lrrl.rbb
+63842 zbbwj
+$ cd ..
+$ cd hghjzpgc
+$ ls
+dir mgnq
+273152 mnszcbnv.fzj
+$ cd mgnq
+$ ls
+dir ttmctqlc
+250332 wdsjg.thm
+20054 zpzml
+$ cd ttmctqlc
+$ ls
+9006 nqth.gcn
+$ cd ..
+$ cd ..
+$ cd ..
+$ cd ..
+$ cd nwjggvr
+$ ls
+dir bwmglvmt
+202937 lqqmqzl.vqj
+dir lrrl
+dir wmjp
+dir zvlhngjm
+$ cd bwmglvmt
+$ ls
+dir bszd
+244726 dnwvnsn.npc
+dir dqdrngf
+226857 jvcn
+dir lrrl
+288079 mjfdjrgt.ttw
+172669 vqr
+dir wtqgd
+$ cd bszd
+$ ls
+3937 csn.mft
+198599 vpbccpm
+$ cd ..
+$ cd dqdrngf
+$ ls
+26680 lrrl.gch
+150627 tndtmwfv
+$ cd ..
+$ cd lrrl
+$ ls
+dir bzrs
+27874 grjbtv
+$ cd bzrs
+$ ls
+71351 wlfwpb.wpg
+$ cd ..
+$ cd ..
+$ cd wtqgd
+$ ls
+58033 lrrl.cgp
+16732 vnznzhc.bzr
+137407 wlfwpb.wpg
+$ cd ..
+$ cd ..
+$ cd lrrl
+$ ls
+dir wrtp
+$ cd wrtp
+$ ls
+267582 nwmj.rlb
+$ cd ..
+$ cd ..
+$ cd wmjp
+$ ls
+155158 szhljp
+dir tzqqmmp
+163989 zwz.jvq
+$ cd tzqqmmp
+$ ls
+140115 qgwcfnvr.fzt
+$ cd ..
+$ cd ..
+$ cd zvlhngjm
+$ ls
+dir fjt
+214803 mjfdjrgt.zrb
+dir qsvwfb
+187556 tcqgvqr.gmv
+185730 tndtmwfv
+301659 wlfwpb.wpg
+$ cd fjt
+$ ls
+57947 mnchj
+$ cd ..
+$ cd qsvwfb
+$ ls
+23145 dzrgbhgf.dcm
+$ cd ..
+$ cd ..
+$ cd ..
+$ cd sqpgr
+$ ls
+dir bpnlrhsb
+dir jvdh
+dir zplwvj
+$ cd bpnlrhsb
+$ ls
+22875 wdsjg.thm
+$ cd ..
+$ cd jvdh
+$ ls
+95461 ftmzfwt
+$ cd ..
+$ cd zplwvj
+$ ls
+dir gtd
+$ cd gtd
+$ ls
+50675 lgjbhr.jmc
+$ cd ..
+$ cd ..
+$ cd ..
+$ cd wgpqg
+$ ls
+65679 wlfwpb.wpg
+$ cd ..
+$ cd ..
+$ cd qgpr
+$ ls
+dir fhnnc
+dir jzmpcc
+dir lrrl
+dir wdtm
+$ cd fhnnc
+$ ls
+84726 tndtmwfv
+$ cd ..
+$ cd jzmpcc
+$ ls
+dir mjfdjrgt
+dir mrnhn
+dir wdtm
+120156 whz.cts
+134435 wlfwpb.wpg
+$ cd mjfdjrgt
+$ ls
+234188 wdtm.bpt
+$ cd ..
+$ cd mrnhn
+$ ls
+dir gphqmvpn
+dir gvtgqn
+$ cd gphqmvpn
+$ ls
+23807 nzl.hzv
+$ cd ..
+$ cd gvtgqn
+$ ls
+225267 fbt.cnp
+132455 mrnhn.vcn
+$ cd ..
+$ cd ..
+$ cd wdtm
+$ ls
+dir cfhjvmh
+dir mjfdjrgt
+119601 mjfdjrgt.rhc
+226225 wdsjg.thm
+191042 wdtm
+$ cd cfhjvmh
+$ ls
+130491 dgdcbwqp.czm
+$ cd ..
+$ cd mjfdjrgt
+$ ls
+87408 djd.ccj
+152868 mjfdjrgt.zcn
+22605 srdfwwtj.rcp
+$ cd ..
+$ cd ..
+$ cd ..
+$ cd lrrl
+$ ls
+26548 zwrctnn.lln
+$ cd ..
+$ cd wdtm
+$ ls
+dir jszntstc
+$ cd jszntstc
+$ ls
+210953 gwgmnvsh.nhb
+277302 msqjtrdm
+$ cd ..
+$ cd ..
+$ cd ..
+$ cd ..
+$ cd sqhw
+$ ls
+dir djw
+dir dqnhzbh
+dir lwp
+dir mjfdjrgt
+211273 mjfdjrgt.hls
+dir mrnhn
+$ cd djw
+$ ls
+98290 cfhjvmh.jpr
+$ cd ..
+$ cd dqnhzbh
+$ ls
+43311 bdf.pzd
+68801 cfwdq.rbz
+dir cmfhw
+dir cwtm
+77978 nnzhntgh
+138343 nqth.gcn
+81692 tzhltsq
+dir zwhs
+$ cd cmfhw
+$ ls
+dir dsbjlmrf
+215307 fbt.cnp
+dir lch
+217372 mjfdjrgt.dzq
+228751 tndtmwfv
+dir tpgszv
+$ cd dsbjlmrf
+$ ls
+92510 pzq.hcl
+$ cd ..
+$ cd lch
+$ ls
+171339 czhsjn.ttq
+$ cd ..
+$ cd tpgszv
+$ ls
+215263 nvgcfqzb.gww
+$ cd ..
+$ cd ..
+$ cd cwtm
+$ ls
+105200 twrb.ljq
+$ cd ..
+$ cd zwhs
+$ ls
+35576 gnt.zdh
+68204 mfg
+207974 njb.lzw
+$ cd ..
+$ cd ..
+$ cd lwp
+$ ls
+65175 jcwncw.tms
+208506 tndtmwfv
+$ cd ..
+$ cd mjfdjrgt
+$ ls
+dir hlgqdqb
+153252 mjfdjrgt.njp
+dir pdsdjdlz
+144949 phsnm.bvl
+287686 zlszpmlv.gsf
+$ cd hlgqdqb
+$ ls
+128570 fdbls
+dir lmhrtp
+dir mjfdjrgt
+184639 mjfdjrgt.lct
+168706 mmlfd
+159454 mrdljff
+dir pzcnzs
+dir rcmzfm
+86088 tndtmwfv
+$ cd lmhrtp
+$ ls
+251922 cfhjvmh.njw
+$ cd ..
+$ cd mjfdjrgt
+$ ls
+61866 nqtrmm.zts
+24980 wlfwpb.wpg
+$ cd ..
+$ cd pzcnzs
+$ ls
+123265 fbt.cnp
+$ cd ..
+$ cd rcmzfm
+$ ls
+dir gjls
+$ cd gjls
+$ ls
+109021 cnzz
+$ cd ..
+$ cd ..
+$ cd ..
+$ cd pdsdjdlz
+$ ls
+103346 zhfhrzmr.qqm
+$ cd ..
+$ cd ..
+$ cd mrnhn
+$ ls
+dir tmldr
+140361 tndtmwfv
+$ cd tmldr
+$ ls
+169607 dvchnsqr.ltc
+$ cd ..
+$ cd ..
+$ cd ..
+$ cd vllgn
+$ ls
+58389 tndtmwfv
+$ cd ..
+$ cd wdtm
+$ ls
+dir cfhjvmh
+dir cpcqz
+dir gmrgsmpp
+290978 jbfn
+179525 mjfdjrgt
+dir mrnhn
+dir nvgmrpdf
+dir vpm
+67780 wlfwpb.wpg
+dir ztp
+$ cd cfhjvmh
+$ ls
+dir hqf
+218467 lfl.vpp
+dir rgq
+147778 rhntpj
+dir tgmw
+$ cd hqf
+$ ls
+207656 blvtl.zhg
+$ cd ..
+$ cd rgq
+$ ls
+54691 cfhjvmh.mhw
+201230 jjhr.lml
+22759 mgqdg.qsj
+$ cd ..
+$ cd tgmw
+$ ls
+153570 nqth.gcn
+$ cd ..
+$ cd ..
+$ cd cpcqz
+$ ls
+dir cfhjvmh
+17143 fbt.cnp
+dir ftpm
+dir lrrl
+92760 lwdzptgw.gfv
+dir mrnhn
+151636 tndtmwfv
+dir vqt
+$ cd cfhjvmh
+$ ls
+17554 wlfwpb.wpg
+$ cd ..
+$ cd ftpm
+$ ls
+244476 crpfc.bwn
+290894 dhdnh
+210196 lhf
+58166 nqth.gcn
+$ cd ..
+$ cd lrrl
+$ ls
+229894 btrbfh.twr
+269093 cfhjvmh.pbb
+277722 fvhtjpg.pvb
+236232 gztc.lbh
+dir mjfdjrgt
+230753 qgjrh.zsf
+dir sdvhlnz
+$ cd mjfdjrgt
+$ ls
+186105 lrrl.zng
+226081 lsdzz.gsj
+33416 nqth.gcn
+109966 wgtclbvt.nct
+160015 wlfwpb.wpg
+$ cd ..
+$ cd sdvhlnz
+$ ls
+219905 cngbvwz.zsm
+284092 dgjz
+dir lcmlmr
+22135 lrrl
+dir vdcbcvzv
+dir wdwgp
+dir zllqgnhj
+$ cd lcmlmr
+$ ls
+dir lrrl
+$ cd lrrl
+$ ls
+104034 cpv
+$ cd ..
+$ cd ..
+$ cd vdcbcvzv
+$ ls
+263858 qwsmpvdv.lfr
+dir sldsnqld
+$ cd sldsnqld
+$ ls
+3116 hvsb.vrj
+166766 wqfg.ztg
+$ cd ..
+$ cd ..
+$ cd wdwgp
+$ ls
+11714 wdsjg.thm
+$ cd ..
+$ cd zllqgnhj
+$ ls
+113285 hrjtqzvf
+$ cd ..
+$ cd ..
+$ cd ..
+$ cd mrnhn
+$ ls
+212363 bhldtsnn.jbp
+194936 wdsjg.thm
+$ cd ..
+$ cd vqt
+$ ls
+46371 lrrl.ztz
+215875 rnggjsg.hsw
+255959 vnjhm.frz
+277765 vwvjnrjp.mwq
+$ cd ..
+$ cd ..
+$ cd gmrgsmpp
+$ ls
+dir fbcv
+275639 fbt.cnp
+dir tnrmj
+65119 vtfjqtw.tqg
+117334 zsg.grj
+$ cd fbcv
+$ ls
+dir htmwl
+292840 wwwspsb.hrb
+$ cd htmwl
+$ ls
+34803 dshcw
+10573 dwtd
+$ cd ..
+$ cd ..
+$ cd tnrmj
+$ ls
+dir cfhjvmh
+dir wqtnrwg
+$ cd cfhjvmh
+$ ls
+110464 wlfwpb.wpg
+$ cd ..
+$ cd wqtnrwg
+$ ls
+283055 mfgllgv
+$ cd ..
+$ cd ..
+$ cd ..
+$ cd mrnhn
+$ ls
+2633 tndtmwfv
+$ cd ..
+$ cd nvgmrpdf
+$ ls
+32919 pnc
+$ cd ..
+$ cd vpm
+$ ls
+dir ddz
+dir dhmphrn
+dir grr
+132419 mgfdgw.vlt
+dir nbccdd
+dir plw
+183717 pvgbbjgt.wbt
+dir qsmg
+120729 stbh.rvz
+101652 ttqc
+$ cd ddz
+$ ls
+4672 hrnnrzd
+217020 wdtm
+$ cd ..
+$ cd dhmphrn
+$ ls
+dir fwbmb
+dir gdq
+dir lrrl
+dir mrcnm
+dir mrmmr
+161427 rllvrpzl.vcg
+$ cd fwbmb
+$ ls
+258937 dfd.wrl
+103543 gtfgscfg.jjc
+$ cd ..
+$ cd gdq
+$ ls
+133691 bzgt.llh
+278010 cfhjvmh.nhj
+191344 cjbcnfz.rjb
+269115 fbt.cnp
+$ cd ..
+$ cd lrrl
+$ ls
+dir gqqsg
+dir gwbtt
+dir mrnhn
+140500 nqth.gcn
+dir pdtm
+220764 tndtmwfv
+dir vvsvfchb
+$ cd gqqsg
+$ ls
+dir gvn
+dir hzfmdhw
+34666 vfzbvl
+dir wdtm
+$ cd gvn
+$ ls
+206457 cfhjvmh.thh
+133435 hsdsstt
+dir lrrl
+dir rwvbmlq
+127003 sjqvt.lzl
+136402 wlfwpb.wpg
+60537 zwjfrqf.nvl
+$ cd lrrl
+$ ls
+15291 mrnhn.ltr
+190429 wlfwpb.wpg
+119328 wln.msz
+86384 zbhzvrc.gbj
+$ cd ..
+$ cd rwvbmlq
+$ ls
+186907 nqth.gcn
+$ cd ..
+$ cd ..
+$ cd hzfmdhw
+$ ls
+9653 fbt.cnp
+dir lvdhtg
+301280 nqth.gcn
+dir nwnp
+241354 vzrbbj.bfb
+$ cd lvdhtg
+$ ls
+dir cfhjvmh
+dir hzpzz
+296694 mjfdjrgt.mpj
+65800 nqth.gcn
+dir pbfhn
+dir wljjgs
+$ cd cfhjvmh
+$ ls
+87654 htlq
+203005 vhmthzjb
+$ cd ..
+$ cd hzpzz
+$ ls
+153446 brfstm.nwc
+47585 cfhjvmh
+258754 wdtm.gpt
+150809 zlwq.hgr
+$ cd ..
+$ cd pbfhn
+$ ls
+dir mjfdjrgt
+$ cd mjfdjrgt
+$ ls
+16108 rmfwpm.fnt
+$ cd ..
+$ cd ..
+$ cd wljjgs
+$ ls
+228757 bqf.jll
+$ cd ..
+$ cd ..
+$ cd nwnp
+$ ls
+124842 lrrl
+$ cd ..
+$ cd ..
+$ cd wdtm
+$ ls
+122771 fbt.cnp
+252697 lpqf.bvg
+264813 mrnhn
+165228 pgn.wnw
+dir vsls
+292567 wlfwpb.wpg
+$ cd vsls
+$ ls
+250070 dvbv
+$ cd ..
+$ cd ..
+$ cd ..
+$ cd gwbtt
+$ ls
+dir mjfdjrgt
+2327 nqth.gcn
+20064 sdjvgv.sfr
+$ cd mjfdjrgt
+$ ls
+96726 fbt.cnp
+4801 lrrl.fgv
+180291 wspcp.brw
+$ cd ..
+$ cd ..
+$ cd mrnhn
+$ ls
+dir lrrl
+dir mqcstf
+271459 nqth.gcn
+190006 zdln
+$ cd lrrl
+$ ls
+160260 fbt.cnp
+281732 tfpprjj
+$ cd ..
+$ cd mqcstf
+$ ls
+222125 gntrdss.zcw
+dir pdbbbmn
+58613 stwlp.wpl
+$ cd pdbbbmn
+$ ls
+250947 mjfdjrgt
+$ cd ..
+$ cd ..
+$ cd ..
+$ cd pdtm
+$ ls
+55975 wdhn
+$ cd ..
+$ cd vvsvfchb
+$ ls
+10547 hpwmnjgc
+157960 tcc
+$ cd ..
+$ cd ..
+$ cd mrcnm
+$ ls
+106708 cfhjvmh
+264809 ffqfm.slz
+dir lrrl
+dir mjfdjrgt
+174610 wlfwpb.wpg
+90207 wwhwvdc.zvc
+$ cd lrrl
+$ ls
+305034 fbt.cnp
+240756 jmfwlmzv.gjc
+77875 wgfpcscz.mdn
+$ cd ..
+$ cd mjfdjrgt
+$ ls
+26073 mrnhn
+$ cd ..
+$ cd ..
+$ cd mrmmr
+$ ls
+287663 qlc
+$ cd ..
+$ cd ..
+$ cd grr
+$ ls
+dir tgb
+$ cd tgb
+$ ls
+203808 psssw.nzs
+$ cd ..
+$ cd ..
+$ cd nbccdd
+$ ls
+62162 wfmhzh
+$ cd ..
+$ cd plw
+$ ls
+185632 ljwvnppm.bcc
+$ cd ..
+$ cd qsmg
+$ ls
+164538 lrrl.flr
+dir vbvtzmsg
+dir wrrtctvd
+$ cd vbvtzmsg
+$ ls
+15318 mrnhn.qlh
+$ cd ..
+$ cd wrrtctvd
+$ ls
+249219 lggjwn.mfj
+$ cd ..
+$ cd ..
+$ cd ..
+$ cd ztp
+$ ls
+241178 fzc.swf
+dir hns
+223340 lbmzvf
+dir wdtm
+195144 wlfwpb.wpg
+$ cd hns
+$ ls
+dir fshzss
+77792 mjfdjrgt.qcm
+85013 nlpsw
+274710 pmclgp.lvz
+dir spdzjs
+$ cd fshzss
+$ ls
+297058 fbj.qjm
+131320 wjbhllz.mnf
+$ cd ..
+$ cd spdzjs
+$ ls
+165766 nrzthq.rvj
+10584 zfhqhm.njj
+$ cd ..
+$ cd ..
+$ cd wdtm
+$ ls
+dir vnmg
+$ cd vnmg
+$ ls
+83938 mrnhn.wwd
+$ cd ..
+$ cd ..
+$ cd ..
+$ cd ..
+$ cd ztfdwp
+$ ls
+152895 swjdzqdh.ngv
+215804 tndtmwfv
+68954 wdsjg.thm";
+
+    var cwd = new Dir("~");
+    var root = cwd;
+    data.Replace("\r", "").Split("\n").ToList().ForEach(line => {
+        if(Regex.Match(line, "\\$ cd (?<dest>.+)") is Match {Success:true} cd) {
+            var dest = cd.Groups["dest"].Value;
+            if(dest == "..") {
+                cwd = cwd.parent;
+            } else if(dest == "/") {
+                while(cwd.parent != null) {
+                    cwd = cwd.parent;
+                }
+            } else {
+                if(!cwd.contents.ContainsKey(dest)) {
+                    cwd.contents[dest] = new Dir(cwd.path + "/" + dest) { parent = cwd };
+                }
+
+                cwd = (Dir)cwd.contents[dest];
+            }
+        } else if(Regex.Match(line, "(?<size>[0-9]+) (?<name>.+)") is Match {Success:true } file) {
+            var size = int.Parse(file.Groups["size"].Value);
+            var name = (file.Groups["name"].Value);
+            cwd.contents[name] = new File(size);
+        }
+    });
+
+    Console.WriteLine(root.GetDirs().Sum(d => d.size));
+
+    var rootSize = root.size;
+    root.GetTree().Where(dir => rootSize - dir.size < 40_000_000).OrderBy(d => d.size).Take(1).ToList().ForEach(dir => Console.WriteLine(dir.path + " " + dir.size));
+}
+void p8() {
+    var data =
+@"300030213213113240234210203330153124541151003015456312312442524531405533542450111443312103110220211
+133000004421300341005340432514034555543556261543410250030436135103304323425502113341331442032311030
+213121312230422241205230130541010120012561656126511652636160154566425231221254515542342023142010133
+210020103232311410025023513110540633654032560666266266442224400244155120504322112255323444432301210
+300221311013444150512444105105055122104524660253365233115442634642236455351502043504233200041232000
+000000011130235121555143014441555205423003555504400645452656322632050035240315440035451003103431431
+012142333141321404105321351332544222551046221101044054031533500165110422142125530252401331243211232
+020213033022012453014033014405001564353352011316633456214232621532251606161624054400501054130430422
+042314012030233125141141244243333123002627374716422264424361631360462131201236611502353523210122300
+211224020402441314100154352420322456122364263545772174674761655261311042611615130513350241030243433
+314424032332214322125462603406635133652272743472434161773175755665106156425610245350415311352303020
+430442043211531134103213404455524724321332213636522224572442553173311265220261503235505013340341232
+001001325232413003110430361654232165433226632435251776357256175725724566400520111500101504331132114
+334412500412200403511523220032572737752127755542727442166375451622531763242464326501020110104340144
+121243523444032105062316052754715461676111661333423221122752355145371142754413605365235134243015313
+242330445052105423412660066474767425155231852584272588286671442475372464535465114141632114402431330
+122050043214212560234014261446673143437367834853285853825877263146536255554162263165412530555001012
+310254352155555362305652565245733333847537568334443567664745527772362543753627625001150411055105112
+025031121433111201225651315747477674878824738825265832254676344282526441156537710545602456542112210
+105541425514161020436715372516214235452255778656548556525666534284848751622646711602335633004210430
+120403544243300210571653423576358224736356674473762873838666826244548367625153434754030101342121403
+432020535536321653451132344347283847864642562823856582222257783373625252524642355422611066341041555
+105515504230051446254242173357243344432244287653558393463636636527332375861462227252610460111541451
+424315140455252444231317616735826624757676779939449898765575452676252735247362276562636111623005500
+021423534431553132473112715725478325366953865554356694548876447733778524336511267122410032353204044
+445423066641156261422146768782747848378447486547353679545953363787428372464325267535533614266344140
+152411666100126757726562222726546749954446865366696449877979478486373233467373175176717065434502141
+140202601300054474441768586442348397689388764774948539945648798559996563788746555346275261454103223
+544203021060377313252177225245274373949438556349734495443338667684563463227487637566451205231151234
+225400103300571274173335762334287864949875576664869759876374397685438976626326425644665160321405114
+230314645445261324544678872478778643594945995976689844475579675835534645236636838337776723535345500
+150534014520772265552634657365463588877484555578696496798458453663473396824266754637171242001256124
+501401625205514213726356888877344586367477569695884664945598775858874867554835685452612772106263532
+003545414654644264168635752867577699868859699658765954768468556893987864886348334776371465025135140
+251042560617345355567763755683459686855588797756945758776799955744646686687652842535676751665034401
+302210131663435613688532374877833645976757884777578755957476749797784636464388672831672655516160250
+111065246313516415337376337787538574959786899487589688777994584659853384389926247746333354700561235
+110414613452245538424336745356686988599756856889899665657755876955474687659467286778227144340035665
+412353204671232672374342364957877787589988865788855789958795889895469566379993753537827253655122163
+220455060636641757662657656485887468555667756998687885558888697575769544353438542486665473665353031
+061302402574166188357244985755358964658897589996959669756655586556668978665737857647731571412663614
+451215265723364666667225569887469777655996787798658577588667964644965767693668287254634774752440436
+301215542714677435434258733978685986666878695679857768798658676786669569956767732852857361576404432
+154623106155526744253836847466987985777579987895579899887867686679478588489549787628542237217621402
+016326557476722738858767965394776546697557589788987986685897875855497888993584977357781252535652100
+516434443771523825524465875344974794885887577968879977777596685889766469448884476765464722367346613
+663333275643147748552476447559494596988869978768877866788776955886649886647734953675545514515635060
+564446265661363787884698458539864897955876879789888686667667695889588654946548558665552464445515100
+444635271445544486468235896595657574556796676868879879878987585894795697656985562654886247765264633
+462165473462113357828755539386966448779857797769787979697957598754959785656563752733766632117233453
+324114033531125766355764993645548777979758996876999867877675777569547846779389355565826361114230641
+224200317716278667488649555774497597689687678896896677969958769969794969974689727365357612457234644
+402622076242363764226695388365948877677669866868687967866668896555954488854868827247567131532732161
+351431525533425423868437845597564857555568597698676776879667799897879746844566636356646565257121003
+225616611661632445584357877765956764697568598699686698997669677996868665573893357436745717575725454
+464505117521646733487884876599599666866788675666888876875979598579854747435497874323277332541546013
+052114137625735662285578885579794999468569858977677679667685665987955489696478687578266127111546664
+316613323223637567683247984347647849968985558977789767985598956679896995585799768687622276617221641
+150200045167123286782287837679577787677797988695867797789687586558667574856533357756471257515363540
+252244417323233175887456579833456748749996686798597998557665769755856789834546748233733443273254100
+356160635747716144466869844679547594648877886665966889699566759455979998476485752287252722716164416
+425166022644275152644747799869954648746958878589556668589768447767896344585634858425817452170565306
+345366062117166733576545864397534485854779888658678987596689784695568398698547735888734716543316365
+533535636242332164847587898599999846566885656697676699688759667965889473655654364846464567176441222
+145156433556112342733574868953399368585597766648768658747699944777476969449428537232155673534436334
+054406066337214353545756523343684448899669455797588778689784798466937584849358665356646637313111401
+254230005511427461268747424696354657897679767675549867458844878496487636435757334231367213603232112
+555355424332316775464478853457754765559478879676449464477968898464959946683563372221445526535034024
+414023123606577152476576548378794456898548667574545479875668799757679333543655778735436732625602102
+103425425660432324255388475439558538899897884857688985496679573943943844375486647275716474356544432
+452130224302617716756636522262934655383939784956995477695867446373399748438345254577364313526363420
+000042112640363475341785644528248693738497465445788948789539367488865954668672787612122734016622455
+023111166642052271313457755228576545698943896555698897675589438943493564742233477111247522056555041
+204431055441351336464513762857847353357853376696786639733989764484974246522527515321225331245432343
+411113064641332752327456644465236399895559367589866764738365755795443834767856231524273551544613205
+002003415151314635554646457575673343677789786935595493666738344866563385573637543752334431304230033
+232000241320312557743676572825328454583544756367648459896978649838474485587354722365706253422641104
+140032334604361016614454563867878852473268539588353455546354984764388862653617247612502644151343100
+230313534421421354553535613177284354853423658747835975969372246355755687417111117262662010635050245
+455442045443411622436616447216784738377874843272575735853775463446344736154635424345111430260111355
+015553515233634200652274644243776752756254628443363283782332853857876372453144557606024162435425502
+414231425344640401425671247313254225752325627774572863823427628435276621555353276003524346445135344
+444014215230466136522431711445473522537227372726657772534226483275376766662531115626523414452105414
+433450111244440640533563144151113117278453728882746574687858827886235133216737041020563315330400051
+043413224423155241164263423653444422516645633847447523577743865447652437564632624466116150042552500
+034343233153545155011601574561726663612576786744276243622471222711311674626123164654601253202230221
+334424544214152026360221522751357747561434577416644336551153665531545226246342213505320031201441042
+444213310102503010334251632366652423612713524641262137252252513732611325223401240210534434334020134
+113234310313013130034263432336443446455536236436221526156612252522132633100613031453230501112202424
+142402332004051013660101510101263126711727662153761423762243333777317301206400030653210431512111444
+411034340051512350022551420314334411275415543216224154457677376654154362121625361111251523342230021
+401212212311255150514520514410354360022337233263271545513775531712533425164554033545254524043033243
+040034023233143153232242654250224010246422671266544421771125320425056106225340103411544104041430023
+202210233034441525003330614323226104160433060432454154126634040116105426512145204401511210203422322
+011431432013322542545215145526600364414641235513425454443064214552663664101101323545031512031302333
+020023210301103025401200032420642652143243335333016204055261530250106466135400230513140242434444003
+310203111441432251152455421244135150164323516554016042002411655305545265404525521215102013341240121
+012320311100031143153052200224256541012135453345356532252242115324133425054343145333123421144111230
+311310344433212432240252542030050542510636225454204032233645040015025321421052152330422440232330022";
+    var trees = data.Replace("\r", "").Split("\n").Select(line => line.Select(ch => ch - '0').ToArray()).ToArray();
+    var side = trees.Length;
+    var vNorth = new bool[side, side];
+    var vSouth = new bool[side, side];
+    var vEast = new bool[side, side];
+    var vWest = new bool[side, side];
+
+    foreach (var x in Enumerable.Range(0, side)) {
+        var maxNorth = -1;
+        foreach(var y in Enumerable.Range(0, side)) {
+            var h = trees[x][y];
+            vNorth[x, y] = h > maxNorth;
+            maxNorth = Math.Max(maxNorth, h);
+        }
+        var maxSouth = -1;
+        foreach (var y in Enumerable.Range(0, side).Reverse()) {
+            var h = trees[x][y];
+            vSouth[x, y] = h > maxSouth;
+            maxSouth = Math.Max(maxSouth, h);
+        }
+    }
+    foreach (var y in Enumerable.Range(0, side)) {
+        var maxEast = -1;
+        foreach (var x in Enumerable.Range(0, side)) {
+            var h = trees[x][y];
+            vEast[x, y] = h > maxEast;
+            maxEast = Math.Max(maxEast, h);
+        }
+        var maxWest = -1;
+        foreach (var x in Enumerable.Range(0, side).Reverse()) {
+            var h = trees[x][y];
+            vWest[x, y] = h > maxWest;
+            maxWest = Math.Max(maxWest, h);
+        }
+    }
+    var res = Enumerable.Range(0, side).Sum(x => Enumerable.Range(0, side).Sum(y =>
+        vNorth[x, y] || vEast[x, y] || vSouth[x, y] || vWest[x, y] ? 1 : 0
+    ));
+    Console.WriteLine(res);
+}
+void p10() {
+    var data = @"noop
+noop
+noop
+addx 5
+addx 1
+addx 4
+addx 1
+noop
+addx 4
+noop
+addx 1
+addx 4
+addx 8
+addx -7
+addx 3
+addx 1
+noop
+addx 4
+addx 2
+addx 5
+addx -1
+noop
+addx -37
+noop
+noop
+addx 3
+addx 2
+addx 13
+addx 12
+addx -15
+addx -2
+addx 2
+addx -11
+addx 18
+addx 2
+addx -15
+addx 16
+addx 5
+addx 2
+addx 5
+noop
+noop
+noop
+addx 3
+addx -2
+addx -38
+noop
+addx 3
+addx 4
+noop
+noop
+noop
+noop
+noop
+addx 5
+addx 5
+noop
+noop
+addx 21
+addx -17
+addx 6
+noop
+noop
+noop
+noop
+addx 5
+noop
+noop
+noop
+noop
+noop
+addx 3
+addx 5
+addx -38
+noop
+noop
+addx 5
+addx -2
+addx 1
+addx 7
+noop
+addx 22
+addx -18
+addx -11
+addx 27
+addx -13
+addx 2
+addx 5
+addx -8
+addx 9
+addx 2
+noop
+addx 7
+noop
+addx 1
+noop
+addx -38
+noop
+addx 2
+addx 5
+addx -3
+noop
+addx 8
+addx 11
+addx -6
+noop
+addx 24
+addx -31
+addx 10
+addx 2
+addx 5
+addx 3
+noop
+addx 2
+addx -29
+addx 21
+addx 11
+addx 5
+addx -39
+addx 4
+addx -2
+addx 2
+addx 7
+noop
+addx -1
+addx 2
+noop
+addx 4
+noop
+addx 1
+addx 2
+addx 5
+addx 2
+noop
+noop
+addx -6
+addx 9
+addx -18
+addx 25
+addx 3
+noop
+addx -17
+noop";
+    int x = 1;
+    int cycle = 0;
+
+    var total = 0;
+    void Cycle() {
+        cycle++; 
+        if ((cycle + 20)%40 == 0) {
+            total += cycle * x;
+        }
+    }
+    data.Replace("\r", "").Split("\n").ToList().ForEach(line => {
+        if(line == "noop") {
+            Cycle();
+        } else if(Regex.Match(line, "addx (?<inc>-?[0-9]+)") is Match { Success:true} m) {
+            Cycle();
+            Cycle();
+            x += int.Parse(m.Groups["inc"].Value);
+        }
+    });
+    Console.WriteLine(total);
+}
+void p14() {
+    var data = @"516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+495,26 -> 495,27 -> 507,27 -> 507,26
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+502,42 -> 502,45 -> 496,45 -> 496,51 -> 507,51 -> 507,45 -> 506,45 -> 506,42
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+506,30 -> 510,30
+527,130 -> 527,122 -> 527,130 -> 529,130 -> 529,121 -> 529,130 -> 531,130 -> 531,129 -> 531,130 -> 533,130 -> 533,121 -> 533,130 -> 535,130 -> 535,122 -> 535,130 -> 537,130 -> 537,128 -> 537,130
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+503,67 -> 503,59 -> 503,67 -> 505,67 -> 505,60 -> 505,67 -> 507,67 -> 507,60 -> 507,67 -> 509,67 -> 509,58 -> 509,67 -> 511,67 -> 511,60 -> 511,67 -> 513,67 -> 513,59 -> 513,67 -> 515,67 -> 515,61 -> 515,67
+548,117 -> 553,117
+503,33 -> 507,33
+527,130 -> 527,122 -> 527,130 -> 529,130 -> 529,121 -> 529,130 -> 531,130 -> 531,129 -> 531,130 -> 533,130 -> 533,121 -> 533,130 -> 535,130 -> 535,122 -> 535,130 -> 537,130 -> 537,128 -> 537,130
+539,149 -> 544,149
+489,38 -> 489,39 -> 503,39 -> 503,38
+527,130 -> 527,122 -> 527,130 -> 529,130 -> 529,121 -> 529,130 -> 531,130 -> 531,129 -> 531,130 -> 533,130 -> 533,121 -> 533,130 -> 535,130 -> 535,122 -> 535,130 -> 537,130 -> 537,128 -> 537,130
+533,111 -> 538,111
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+489,38 -> 489,39 -> 503,39 -> 503,38
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+527,130 -> 527,122 -> 527,130 -> 529,130 -> 529,121 -> 529,130 -> 531,130 -> 531,129 -> 531,130 -> 533,130 -> 533,121 -> 533,130 -> 535,130 -> 535,122 -> 535,130 -> 537,130 -> 537,128 -> 537,130
+510,76 -> 510,78 -> 503,78 -> 503,84 -> 521,84 -> 521,78 -> 516,78 -> 516,76
+503,67 -> 503,59 -> 503,67 -> 505,67 -> 505,60 -> 505,67 -> 507,67 -> 507,60 -> 507,67 -> 509,67 -> 509,58 -> 509,67 -> 511,67 -> 511,60 -> 511,67 -> 513,67 -> 513,59 -> 513,67 -> 515,67 -> 515,61 -> 515,67
+503,67 -> 503,59 -> 503,67 -> 505,67 -> 505,60 -> 505,67 -> 507,67 -> 507,60 -> 507,67 -> 509,67 -> 509,58 -> 509,67 -> 511,67 -> 511,60 -> 511,67 -> 513,67 -> 513,59 -> 513,67 -> 515,67 -> 515,61 -> 515,67
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+503,67 -> 503,59 -> 503,67 -> 505,67 -> 505,60 -> 505,67 -> 507,67 -> 507,60 -> 507,67 -> 509,67 -> 509,58 -> 509,67 -> 511,67 -> 511,60 -> 511,67 -> 513,67 -> 513,59 -> 513,67 -> 515,67 -> 515,61 -> 515,67
+544,114 -> 549,114
+502,42 -> 502,45 -> 496,45 -> 496,51 -> 507,51 -> 507,45 -> 506,45 -> 506,42
+503,67 -> 503,59 -> 503,67 -> 505,67 -> 505,60 -> 505,67 -> 507,67 -> 507,60 -> 507,67 -> 509,67 -> 509,58 -> 509,67 -> 511,67 -> 511,60 -> 511,67 -> 513,67 -> 513,59 -> 513,67 -> 515,67 -> 515,61 -> 515,67
+533,161 -> 538,161
+503,67 -> 503,59 -> 503,67 -> 505,67 -> 505,60 -> 505,67 -> 507,67 -> 507,60 -> 507,67 -> 509,67 -> 509,58 -> 509,67 -> 511,67 -> 511,60 -> 511,67 -> 513,67 -> 513,59 -> 513,67 -> 515,67 -> 515,61 -> 515,67
+527,130 -> 527,122 -> 527,130 -> 529,130 -> 529,121 -> 529,130 -> 531,130 -> 531,129 -> 531,130 -> 533,130 -> 533,121 -> 533,130 -> 535,130 -> 535,122 -> 535,130 -> 537,130 -> 537,128 -> 537,130
+527,130 -> 527,122 -> 527,130 -> 529,130 -> 529,121 -> 529,130 -> 531,130 -> 531,129 -> 531,130 -> 533,130 -> 533,121 -> 533,130 -> 535,130 -> 535,122 -> 535,130 -> 537,130 -> 537,128 -> 537,130
+547,161 -> 552,161
+510,76 -> 510,78 -> 503,78 -> 503,84 -> 521,84 -> 521,78 -> 516,78 -> 516,76
+527,130 -> 527,122 -> 527,130 -> 529,130 -> 529,121 -> 529,130 -> 531,130 -> 531,129 -> 531,130 -> 533,130 -> 533,121 -> 533,130 -> 535,130 -> 535,122 -> 535,130 -> 537,130 -> 537,128 -> 537,130
+531,100 -> 531,102 -> 524,102 -> 524,105 -> 538,105 -> 538,102 -> 535,102 -> 535,100
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+510,76 -> 510,78 -> 503,78 -> 503,84 -> 521,84 -> 521,78 -> 516,78 -> 516,76
+549,146 -> 554,146
+527,130 -> 527,122 -> 527,130 -> 529,130 -> 529,121 -> 529,130 -> 531,130 -> 531,129 -> 531,130 -> 533,130 -> 533,121 -> 533,130 -> 535,130 -> 535,122 -> 535,130 -> 537,130 -> 537,128 -> 537,130
+546,149 -> 551,149
+527,130 -> 527,122 -> 527,130 -> 529,130 -> 529,121 -> 529,130 -> 531,130 -> 531,129 -> 531,130 -> 533,130 -> 533,121 -> 533,130 -> 535,130 -> 535,122 -> 535,130 -> 537,130 -> 537,128 -> 537,130
+514,73 -> 524,73 -> 524,72
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+503,67 -> 503,59 -> 503,67 -> 505,67 -> 505,60 -> 505,67 -> 507,67 -> 507,60 -> 507,67 -> 509,67 -> 509,58 -> 509,67 -> 511,67 -> 511,60 -> 511,67 -> 513,67 -> 513,59 -> 513,67 -> 515,67 -> 515,61 -> 515,67
+502,42 -> 502,45 -> 496,45 -> 496,51 -> 507,51 -> 507,45 -> 506,45 -> 506,42
+539,155 -> 544,155
+527,130 -> 527,122 -> 527,130 -> 529,130 -> 529,121 -> 529,130 -> 531,130 -> 531,129 -> 531,130 -> 533,130 -> 533,121 -> 533,130 -> 535,130 -> 535,122 -> 535,130 -> 537,130 -> 537,128 -> 537,130
+557,152 -> 562,152
+553,149 -> 558,149
+499,53 -> 499,54 -> 509,54 -> 509,53
+535,133 -> 535,136 -> 530,136 -> 530,140 -> 547,140 -> 547,136 -> 540,136 -> 540,133
+502,42 -> 502,45 -> 496,45 -> 496,51 -> 507,51 -> 507,45 -> 506,45 -> 506,42
+510,76 -> 510,78 -> 503,78 -> 503,84 -> 521,84 -> 521,78 -> 516,78 -> 516,76
+514,73 -> 524,73 -> 524,72
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+535,133 -> 535,136 -> 530,136 -> 530,140 -> 547,140 -> 547,136 -> 540,136 -> 540,133
+527,130 -> 527,122 -> 527,130 -> 529,130 -> 529,121 -> 529,130 -> 531,130 -> 531,129 -> 531,130 -> 533,130 -> 533,121 -> 533,130 -> 535,130 -> 535,122 -> 535,130 -> 537,130 -> 537,128 -> 537,130
+534,117 -> 539,117
+497,23 -> 497,21 -> 497,23 -> 499,23 -> 499,17 -> 499,23 -> 501,23 -> 501,20 -> 501,23
+502,42 -> 502,45 -> 496,45 -> 496,51 -> 507,51 -> 507,45 -> 506,45 -> 506,42
+543,152 -> 548,152
+527,130 -> 527,122 -> 527,130 -> 529,130 -> 529,121 -> 529,130 -> 531,130 -> 531,129 -> 531,130 -> 533,130 -> 533,121 -> 533,130 -> 535,130 -> 535,122 -> 535,130 -> 537,130 -> 537,128 -> 537,130
+510,76 -> 510,78 -> 503,78 -> 503,84 -> 521,84 -> 521,78 -> 516,78 -> 516,76
+527,130 -> 527,122 -> 527,130 -> 529,130 -> 529,121 -> 529,130 -> 531,130 -> 531,129 -> 531,130 -> 533,130 -> 533,121 -> 533,130 -> 535,130 -> 535,122 -> 535,130 -> 537,130 -> 537,128 -> 537,130
+503,67 -> 503,59 -> 503,67 -> 505,67 -> 505,60 -> 505,67 -> 507,67 -> 507,60 -> 507,67 -> 509,67 -> 509,58 -> 509,67 -> 511,67 -> 511,60 -> 511,67 -> 513,67 -> 513,59 -> 513,67 -> 515,67 -> 515,61 -> 515,67
+503,67 -> 503,59 -> 503,67 -> 505,67 -> 505,60 -> 505,67 -> 507,67 -> 507,60 -> 507,67 -> 509,67 -> 509,58 -> 509,67 -> 511,67 -> 511,60 -> 511,67 -> 513,67 -> 513,59 -> 513,67 -> 515,67 -> 515,61 -> 515,67
+542,146 -> 547,146
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+503,67 -> 503,59 -> 503,67 -> 505,67 -> 505,60 -> 505,67 -> 507,67 -> 507,60 -> 507,67 -> 509,67 -> 509,58 -> 509,67 -> 511,67 -> 511,60 -> 511,67 -> 513,67 -> 513,59 -> 513,67 -> 515,67 -> 515,61 -> 515,67
+497,23 -> 497,21 -> 497,23 -> 499,23 -> 499,17 -> 499,23 -> 501,23 -> 501,20 -> 501,23
+509,33 -> 513,33
+535,133 -> 535,136 -> 530,136 -> 530,140 -> 547,140 -> 547,136 -> 540,136 -> 540,133
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+502,42 -> 502,45 -> 496,45 -> 496,51 -> 507,51 -> 507,45 -> 506,45 -> 506,42
+506,36 -> 510,36
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+497,23 -> 497,21 -> 497,23 -> 499,23 -> 499,17 -> 499,23 -> 501,23 -> 501,20 -> 501,23
+503,67 -> 503,59 -> 503,67 -> 505,67 -> 505,60 -> 505,67 -> 507,67 -> 507,60 -> 507,67 -> 509,67 -> 509,58 -> 509,67 -> 511,67 -> 511,60 -> 511,67 -> 513,67 -> 513,59 -> 513,67 -> 515,67 -> 515,61 -> 515,67
+500,36 -> 504,36
+535,133 -> 535,136 -> 530,136 -> 530,140 -> 547,140 -> 547,136 -> 540,136 -> 540,133
+535,133 -> 535,136 -> 530,136 -> 530,140 -> 547,140 -> 547,136 -> 540,136 -> 540,133
+497,23 -> 497,21 -> 497,23 -> 499,23 -> 499,17 -> 499,23 -> 501,23 -> 501,20 -> 501,23
+550,152 -> 555,152
+527,130 -> 527,122 -> 527,130 -> 529,130 -> 529,121 -> 529,130 -> 531,130 -> 531,129 -> 531,130 -> 533,130 -> 533,121 -> 533,130 -> 535,130 -> 535,122 -> 535,130 -> 537,130 -> 537,128 -> 537,130
+503,67 -> 503,59 -> 503,67 -> 505,67 -> 505,60 -> 505,67 -> 507,67 -> 507,60 -> 507,67 -> 509,67 -> 509,58 -> 509,67 -> 511,67 -> 511,60 -> 511,67 -> 513,67 -> 513,59 -> 513,67 -> 515,67 -> 515,61 -> 515,67
+536,158 -> 541,158
+503,67 -> 503,59 -> 503,67 -> 505,67 -> 505,60 -> 505,67 -> 507,67 -> 507,60 -> 507,67 -> 509,67 -> 509,58 -> 509,67 -> 511,67 -> 511,60 -> 511,67 -> 513,67 -> 513,59 -> 513,67 -> 515,67 -> 515,61 -> 515,67
+497,23 -> 497,21 -> 497,23 -> 499,23 -> 499,17 -> 499,23 -> 501,23 -> 501,20 -> 501,23
+495,26 -> 495,27 -> 507,27 -> 507,26
+535,133 -> 535,136 -> 530,136 -> 530,140 -> 547,140 -> 547,136 -> 540,136 -> 540,133
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+503,67 -> 503,59 -> 503,67 -> 505,67 -> 505,60 -> 505,67 -> 507,67 -> 507,60 -> 507,67 -> 509,67 -> 509,58 -> 509,67 -> 511,67 -> 511,60 -> 511,67 -> 513,67 -> 513,59 -> 513,67 -> 515,67 -> 515,61 -> 515,67
+537,114 -> 542,114
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+530,114 -> 535,114
+502,42 -> 502,45 -> 496,45 -> 496,51 -> 507,51 -> 507,45 -> 506,45 -> 506,42
+527,130 -> 527,122 -> 527,130 -> 529,130 -> 529,121 -> 529,130 -> 531,130 -> 531,129 -> 531,130 -> 533,130 -> 533,121 -> 533,130 -> 535,130 -> 535,122 -> 535,130 -> 537,130 -> 537,128 -> 537,130
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+503,67 -> 503,59 -> 503,67 -> 505,67 -> 505,60 -> 505,67 -> 507,67 -> 507,60 -> 507,67 -> 509,67 -> 509,58 -> 509,67 -> 511,67 -> 511,60 -> 511,67 -> 513,67 -> 513,59 -> 513,67 -> 515,67 -> 515,61 -> 515,67
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+545,143 -> 550,143
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+499,53 -> 499,54 -> 509,54 -> 509,53
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+489,38 -> 489,39 -> 503,39 -> 503,38
+503,67 -> 503,59 -> 503,67 -> 505,67 -> 505,60 -> 505,67 -> 507,67 -> 507,60 -> 507,67 -> 509,67 -> 509,58 -> 509,67 -> 511,67 -> 511,60 -> 511,67 -> 513,67 -> 513,59 -> 513,67 -> 515,67 -> 515,61 -> 515,67
+531,100 -> 531,102 -> 524,102 -> 524,105 -> 538,105 -> 538,102 -> 535,102 -> 535,100
+510,76 -> 510,78 -> 503,78 -> 503,84 -> 521,84 -> 521,78 -> 516,78 -> 516,76
+531,100 -> 531,102 -> 524,102 -> 524,105 -> 538,105 -> 538,102 -> 535,102 -> 535,100
+503,67 -> 503,59 -> 503,67 -> 505,67 -> 505,60 -> 505,67 -> 507,67 -> 507,60 -> 507,67 -> 509,67 -> 509,58 -> 509,67 -> 511,67 -> 511,60 -> 511,67 -> 513,67 -> 513,59 -> 513,67 -> 515,67 -> 515,61 -> 515,67
+495,26 -> 495,27 -> 507,27 -> 507,26
+512,36 -> 516,36
+503,67 -> 503,59 -> 503,67 -> 505,67 -> 505,60 -> 505,67 -> 507,67 -> 507,60 -> 507,67 -> 509,67 -> 509,58 -> 509,67 -> 511,67 -> 511,60 -> 511,67 -> 513,67 -> 513,59 -> 513,67 -> 515,67 -> 515,61 -> 515,67
+531,100 -> 531,102 -> 524,102 -> 524,105 -> 538,105 -> 538,102 -> 535,102 -> 535,100
+503,67 -> 503,59 -> 503,67 -> 505,67 -> 505,60 -> 505,67 -> 507,67 -> 507,60 -> 507,67 -> 509,67 -> 509,58 -> 509,67 -> 511,67 -> 511,60 -> 511,67 -> 513,67 -> 513,59 -> 513,67 -> 515,67 -> 515,61 -> 515,67
+527,117 -> 532,117
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+527,130 -> 527,122 -> 527,130 -> 529,130 -> 529,121 -> 529,130 -> 531,130 -> 531,129 -> 531,130 -> 533,130 -> 533,121 -> 533,130 -> 535,130 -> 535,122 -> 535,130 -> 537,130 -> 537,128 -> 537,130
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+497,23 -> 497,21 -> 497,23 -> 499,23 -> 499,17 -> 499,23 -> 501,23 -> 501,20 -> 501,23
+531,100 -> 531,102 -> 524,102 -> 524,105 -> 538,105 -> 538,102 -> 535,102 -> 535,100
+531,100 -> 531,102 -> 524,102 -> 524,105 -> 538,105 -> 538,102 -> 535,102 -> 535,100
+536,152 -> 541,152
+531,100 -> 531,102 -> 524,102 -> 524,105 -> 538,105 -> 538,102 -> 535,102 -> 535,100
+497,23 -> 497,21 -> 497,23 -> 499,23 -> 499,17 -> 499,23 -> 501,23 -> 501,20 -> 501,23
+497,23 -> 497,21 -> 497,23 -> 499,23 -> 499,17 -> 499,23 -> 501,23 -> 501,20 -> 501,23
+535,133 -> 535,136 -> 530,136 -> 530,140 -> 547,140 -> 547,136 -> 540,136 -> 540,133
+541,117 -> 546,117
+499,53 -> 499,54 -> 509,54 -> 509,53
+516,97 -> 516,94 -> 516,97 -> 518,97 -> 518,87 -> 518,97 -> 520,97 -> 520,92 -> 520,97 -> 522,97 -> 522,94 -> 522,97 -> 524,97 -> 524,95 -> 524,97 -> 526,97 -> 526,89 -> 526,97 -> 528,97 -> 528,89 -> 528,97 -> 530,97 -> 530,94 -> 530,97 -> 532,97 -> 532,91 -> 532,97
+540,111 -> 545,111
+527,130 -> 527,122 -> 527,130 -> 529,130 -> 529,121 -> 529,130 -> 531,130 -> 531,129 -> 531,130 -> 533,130 -> 533,121 -> 533,130 -> 535,130 -> 535,122 -> 535,130 -> 537,130 -> 537,128 -> 537,130
+543,158 -> 548,158
+503,67 -> 503,59 -> 503,67 -> 505,67 -> 505,60 -> 505,67 -> 507,67 -> 507,60 -> 507,67 -> 509,67 -> 509,58 -> 509,67 -> 511,67 -> 511,60 -> 511,67 -> 513,67 -> 513,59 -> 513,67 -> 515,67 -> 515,61 -> 515,67
+536,108 -> 541,108
+510,76 -> 510,78 -> 503,78 -> 503,84 -> 521,84 -> 521,78 -> 516,78 -> 516,76
+540,161 -> 545,161";
+    
+    if(false)
+    data = @"498,4 -> 498,6 -> 496,6
+503,4 -> 502,4 -> 502,9 -> 494,9";
+
+    
+    HashSet<(int x, int y)> grid = new();
+    data.Replace("\r", "").Split("\n").ToList().ForEach(line => {
+        var index = 0;
+        var (xf, yf) = (0, 0);
+        line.Split("->").ToList().ForEach(part => {
+            (int xt, int yt) = part.Split(",").Select(int.Parse).ToArray();
+            if (index++ > 0) {
+                var points = ((xt - xf, yt - yf) switch {
+                    (not 0 and var xd, 0) => Enumerable.Range(0, Math.Abs(xd) + 1).Select(i =>
+                        (xf + i * Math.Sign(xd), yf)
+                    ),
+                    (0, not 0 and var yd) => Enumerable.Range(0, Math.Abs(yd) + 1).Select(i =>
+                        (xf, yf + i * Math.Sign(yd))
+                    ),
+                }).ToList();
+                points.ForEach(p => grid.Add(p));
+            }
+
+            (xf, yf) = (xt, yt);
+        });
+    });
+
+    var (xMin, xMax) = (grid.Min(p => p.x), grid.Max(p => p.x));
+
+    var yMax = grid.Max(p => p.y);
+    if (true) {
+        Enumerable.Range(xMin - 500, 1000 + xMax - xMin).ToList().ForEach(x => grid.Add((x, yMax + 2)));
+        yMax += 3;
+
+        xMin -= 1000;
+        xMax += 1000;
+    } else {
+        yMax += 1;
+    }
+
+    var rect = new Rectangle(xMin, 0, 1 + xMax - xMin, yMax);
+    bool Drop() {
+        var (x, y) = (500, 0);
+        while (true) {
+            if (grid.Contains((x, y))) {
+                return false;
+            }
+            if (!rect.Contains(new Point(x, y))) {
+                return false;
+            }
+            if (!grid.Contains((x, y + 1))) {
+                y++;
+            } else if (!grid.Contains((x - 1, y + 1))) {
+                x--;
+                y++;
+            } else if (!grid.Contains((x + 1, y + 1))) {
+                x++;
+                y++;
+            } else {
+                if (rect.Contains(new Point(x, y))) {
+                    grid.Add((x, y));
+                    return true;
+                }
+                return false;
+
+            }
+
+        }
+    }
+    bool Drop2() {
+        var (x, y) = (500, 0);
+        while (true) {
+            if (grid.Contains((x, y))) {
+                return false;
+            }
+            if (!grid.Contains((x, y + 1))) {
+                y++;
+            } else if (!grid.Contains((x - 1, y + 1))) {
+                x--;
+                y++;
+            } else if (!grid.Contains((x + 1, y + 1))) {
+                x++;
+                y++;
+            } else {
+                if (rect.Contains(new Point(x, y))) {
+                    grid.Add((x, y));
+                    return true;
+                }
+                return false;
+
+            }
+
+        }
+    }
+    Enumerable.Range(0, 20).Select(y =>
+            string.Join("", Enumerable.Range(480, 40).Select(x => grid.Contains((x, y)) ? "#" : "."))
+        ).ToList().ForEach(Console.WriteLine);
+
+    if (true) {
+
+        rect.Height += 8;
+
+        var result = 0;
+        while (Drop2()) {
+            result++;
+        }
+        Console.WriteLine(result);
+    } else {
+
+        var result = 0;
+        while (Drop()) {
+            result++;
+        }
+
+        //Console.WriteLine(grid.Count);
+        //Console.WriteLine(string.Join(" ", grid.Select(((int x, int y) p) => $"({p.x}, {p.y})")));
+        
+    }
+    Enumerable.Range(0, 20).Select(y =>
+            string.Join("", Enumerable.Range(480, 40).Select(x => grid.Contains((x, y)) ? "#" : "."))
+        ).ToList().ForEach(Console.WriteLine);
+
+}
+void p16() {
+    var data = @"Valve AA has flow rate=0; tunnels lead to valves DD, II, BB
+Valve BB has flow rate=13; tunnels lead to valves CC, AA
+Valve CC has flow rate=2; tunnels lead to valves DD, BB
+Valve DD has flow rate=20; tunnels lead to valves CC, AA, EE
+Valve EE has flow rate=3; tunnels lead to valves FF, DD
+Valve FF has flow rate=0; tunnels lead to valves EE, GG
+Valve GG has flow rate=0; tunnels lead to valves FF, HH
+Valve HH has flow rate=22; tunnel leads to valve GG
+Valve II has flow rate=0; tunnels lead to valves AA, JJ
+Valve JJ has flow rate=21; tunnel leads to valve II";
+
+    data = @"Valve RT has flow rate=0; tunnels lead to valves EN, LZ
+Valve VB has flow rate=0; tunnels lead to valves SZ, BF
+Valve AD has flow rate=0; tunnels lead to valves EB, JF
+Valve RE has flow rate=4; tunnels lead to valves QB, IF, XT, WF, KW
+Valve RL has flow rate=0; tunnels lead to valves DQ, LZ
+Valve OK has flow rate=0; tunnels lead to valves QH, BF
+Valve RV has flow rate=0; tunnels lead to valves IU, JF
+Valve TE has flow rate=0; tunnels lead to valves HE, XF
+Valve WW has flow rate=0; tunnels lead to valves QH, YZ
+Valve HB has flow rate=15; tunnel leads to valve OM
+Valve IY has flow rate=14; tunnels lead to valves UH, KW, BN, LW, UY
+Valve QF has flow rate=0; tunnels lead to valves JF, PL
+Valve YZ has flow rate=0; tunnels lead to valves JG, WW
+Valve QB has flow rate=0; tunnels lead to valves SP, RE
+Valve SO has flow rate=0; tunnels lead to valves QH, SZ
+Valve EB has flow rate=7; tunnels lead to valves IF, NH, AD, VI, DQ
+Valve VL has flow rate=0; tunnels lead to valves JF, YV
+Valve BF has flow rate=18; tunnels lead to valves OK, VB, OH, SX
+Valve UC has flow rate=0; tunnels lead to valves SC, YV
+Valve OQ has flow rate=0; tunnels lead to valves XT, AA
+Valve YV has flow rate=6; tunnels lead to valves YX, TT, VL, UC, NH
+Valve KJ has flow rate=0; tunnels lead to valves OH, JG
+Valve QH has flow rate=20; tunnels lead to valves SO, OK, WW
+Valve KW has flow rate=0; tunnels lead to valves RE, IY
+Valve PL has flow rate=0; tunnels lead to valves JG, QF
+Valve DQ has flow rate=0; tunnels lead to valves EB, RL
+Valve AA has flow rate=0; tunnels lead to valves YI, EN, UK, OQ, VI
+Valve XT has flow rate=0; tunnels lead to valves OQ, RE
+Valve SZ has flow rate=24; tunnels lead to valves VB, SO
+Valve IU has flow rate=25; tunnels lead to valves RV, HE, HQ
+Valve OM has flow rate=0; tunnels lead to valves NY, HB
+Valve YX has flow rate=0; tunnels lead to valves YV, SI
+Valve SX has flow rate=0; tunnels lead to valves ZB, BF
+Valve KD has flow rate=0; tunnels lead to valves XF, LW
+Valve SP has flow rate=0; tunnels lead to valves XF, QB
+Valve UY has flow rate=0; tunnels lead to valves UK, IY
+Valve XF has flow rate=22; tunnels lead to valves SP, TE, KD, NY
+Valve SC has flow rate=0; tunnels lead to valves LZ, UC
+Valve UK has flow rate=0; tunnels lead to valves UY, AA
+Valve LW has flow rate=0; tunnels lead to valves KD, IY
+Valve FL has flow rate=0; tunnels lead to valves BN, LZ
+Valve VI has flow rate=0; tunnels lead to valves AA, EB
+Valve HW has flow rate=0; tunnels lead to valves JF, CY
+Valve YI has flow rate=0; tunnels lead to valves AA, TT
+Valve HE has flow rate=0; tunnels lead to valves IU, TE
+Valve JG has flow rate=10; tunnels lead to valves PL, YZ, SI, KJ
+Valve BN has flow rate=0; tunnels lead to valves IY, FL
+Valve IF has flow rate=0; tunnels lead to valves EB, RE
+Valve JF has flow rate=19; tunnels lead to valves HW, QF, VL, RV, AD
+Valve SI has flow rate=0; tunnels lead to valves JG, YX
+Valve WF has flow rate=0; tunnels lead to valves LZ, RE
+Valve HQ has flow rate=0; tunnels lead to valves IU, UH
+Valve LZ has flow rate=5; tunnels lead to valves SC, FL, WF, RL, RT
+Valve UH has flow rate=0; tunnels lead to valves IY, HQ
+Valve CY has flow rate=21; tunnel leads to valve HW
+Valve NH has flow rate=0; tunnels lead to valves EB, YV
+Valve TT has flow rate=0; tunnels lead to valves YV, YI
+Valve OH has flow rate=0; tunnels lead to valves KJ, BF
+Valve EN has flow rate=0; tunnels lead to valves RT, AA
+Valve NY has flow rate=0; tunnels lead to valves OM, XF
+Valve ZB has flow rate=8; tunnel leads to valve SX";
+    Dictionary<string, (int rate, string[] branches)> graph= new();
+    Dictionary<string, Dictionary<string, string[]>> routes = new();
+
+    data.Replace("\r", "").Split("\n").ToList().ForEach(line => {
+        var m = Regex.Match(line, "Valve (?<id>[A-Z][A-Z]) has flow rate=(?<rate>[0-9]+); tunnel(s?) lead(s?) to valve(s?) (?<branches>[A-Z, ]+)");
+        var id = m.Groups["id"].Value;
+        var rate = int.Parse(m.Groups["rate"].Value);
+        var branches = m.Groups["branches"].Value.Replace(" ", "").Split(",");
+        graph[id] = (rate, branches);
+    });
+
+    var id = "AA";
+    var rate = 0;
+    var released = 0;
+    var opened = new HashSet<string>();
+
+    int i = 0;
+
+    void pass() {
+        i++;
+        released += rate;
+    }
+    List<string> history = new();
+
+    var wait = false;
+    while (i < 30) {
+        if (wait) {
+            pass();
+            continue;
+        }
+
+        if (!routes.ContainsKey(id)) {
+            var atlas = routes[id] = new();
+            atlas[id] = new string[0];
+            HashSet<string> seen = new();
+            Queue<string> q = new();
+            q.Enqueue(id);
+            while (q.Any()) {
+                var curr = q.Dequeue();
+                seen.Add(curr);
+                foreach(var branch in graph[curr].branches) {
+                    if (seen.Contains(branch)) {
+                        continue;
+                    }
+                    seen.Add(branch);
+                    q.Enqueue(branch);
+                    atlas[branch] = atlas[curr].Append(branch).ToArray();
+                }
+            }
+        }
+
+        var n = graph[id];
+        Console.Clear();
+        string GetString(string id) {
+            return $"{id} {graph[id].rate, 2}{(opened.Contains(id) ? "+" : "")}";
+        }
+        graph.Keys.Select(id => $"{GetString(id), -8} -> {string.Join(", ", graph[id].branches.Select(GetString))}")
+            .ToList().ForEach(Console.WriteLine);
+        Console.WriteLine();
+
+        Console.WriteLine($"turn: {i}");
+        Console.WriteLine($"rate: {rate}, released: {released}");
+        Console.WriteLine($"opened: {string.Join(" ", opened.Select(GetString))}");
+        Console.WriteLine($"You are currently at {GetString(id)}");
+        Console.WriteLine($"Branches: {string.Join(", ", n.branches.Select(GetString))}");
+
+        Console.Write(">");
+        switch (Console.ReadLine()) {
+            case var s when Regex.Match(s, "goto (?<to>[A-Z]{2})") is Match { Success: true } m: {
+
+                    var to = m.Groups["to"].Value;
+                    if (!graph.ContainsKey(to)) {
+                        Console.WriteLine("Invalid destination");
+                        break;
+                    }
+
+                    foreach(var step in routes[id][to]) {
+                        pass();
+                    }
+                    id = to;
+
+                    history.Add($"goto {id}");
+                    break;
+                }
+            case "open": {
+                    if (opened.Contains(id)) {
+                        Console.WriteLine("Valve is already open");
+                        break;
+                    }
+                    pass();
+                    opened.Add(id);
+                    rate += graph[id].rate;
+
+                    history.Add($"open");
+                    break;
+                }
+            case "atlas": {
+                    var atlas = routes[id];
+                    atlas.Keys.Where(dest => !opened.Contains(dest) && graph[dest].rate > 0).Select(dest => $"{GetString(dest)} [{atlas[dest].Length}]").ToList().ForEach(Console.WriteLine);
+                    Console.ReadLine();
+                    break;
+                }
+            case var s when Regex.Match(s, "path (?<to>[A-Z]{2})") is Match { Success:true}m: {
+                    var to = m.Groups["to"].Value;
+                    Console.WriteLine(String.Join(", ", routes[id][to]));
+                    Console.ReadLine();
+                    break;
+                }
+            case "wait": {
+                    history.Add("wait");
+                    wait = true;
+                    break;
+                }
+            case "log": {
+                    history.ForEach(Console.WriteLine);
+                    Console.ReadLine();
+                    break;
+                }
+        }
+    }
+    Console.WriteLine("Results: ");
+    history.ForEach(Console.WriteLine);
+    Console.WriteLine();
+    Console.WriteLine($"released: {released}");
+
+}
+void p21() {
+    var data = @"root: pppw + sjmn
+dbpl: 5
+cczh: sllz + lgvd
+zczc: 2
+ptdq: humn - dvpt
+dvpt: 3
+lfqf: 4
+humn: 5
+ljgn: 2
+sjmn: drzm * dbpl
+sllz: 4
+pppw: cczh / lfqf
+lgvd: ljgn * ptdq
+drzm: hmdt - zczc
+hmdt: 32";
+
+
+    data = @"fgzt: lwpw * grjz
+mrjw: 2
+nzjc: 5
+jhjg: 19
+nwml: dljv * lchm
+chls: dcdj * vwwr
+fnvr: mrbs + scwf
+nrnj: djqg + wtsc
+hfcm: 9
+wfpf: 2
+wczj: 3
+shtj: ctjp + tgcb
+vqln: vmgw * nzbr
+tcbw: 1
+tbnf: qgqd * fcfj
+schb: 2
+djjl: tgbj + vzpl
+hctq: 1
+fjfl: 2
+qwpp: qcvz * djgt
+tbdr: wvnl - dwcw
+tpzl: jwrd * zlhz
+sgpd: pggf * gwdf
+hwcz: qgjb + cvbl
+ccfb: 2
+srmf: crzb + nspz
+hzzp: 1
+tplj: jztf + zfrz
+hvdh: 5
+lzmr: 2
+nllg: 11
+tjht: 2
+mhpt: 2
+tmpj: 6
+zzjv: njsq * dvcl
+jdgt: 2
+gjzs: bnpf * qgqf
+wqdb: 5
+wvwz: fhrt + wwmj
+mrpr: frlg * ccbq
+zlhz: bqwh + jfzm
+btjh: 3
+slcj: rtjq + lcsg
+qrwr: 16
+crzs: 4
+cbjz: 3
+gsgd: ssln + ddpc
+zpdn: wzwq * dsgz
+sswh: ngjl * rhsp
+dddp: mmmv * zrsd
+prwt: 7
+nsrj: 5
+dbfz: fnfr * lfrl
+gbzz: htdl + lwdw
+jvlm: cnfh + ndpr
+ljmb: 10
+mfgj: 2
+vfpp: zwpz * cnsb
+rwgf: 3
+wlbn: tbzq * blbq
+nftn: 11
+dhdr: nlzl * hndd
+trbj: fglw + wcrc
+cwsc: 3
+vgvj: prsc + vdfh
+ddlg: 1
+wnbh: 5
+fqqz: 3
+hcpj: 1
+jqct: 3
+flpb: 15
+qbdz: tgzd * wpth
+bfvn: rvsb * srnp
+lgmt: fvpr + cqjc
+qsbs: fvfg * lzgf
+nwhf: 4
+qqtv: rshj * cvfd
+jmvn: 3
+lbzh: 2
+rzcw: bjns * fzst
+jqnf: 3
+qgqf: drbn * gdgr
+hrnl: snzz - npdl
+ljwb: 3
+bcqz: shjh + dcnn
+nbmd: 5
+srbj: fbbf * qpdt
+fbjq: 4
+scwf: 4
+jcpr: 15
+tmgd: zrwl - qqtv
+mcwt: tczf * rjdr
+zmlm: 3
+cnsb: 5
+znts: 4
+nzlr: zwdl * lwsq
+jwtz: 12
+jvst: 1
+qptv: pqbp * jbfc
+lntd: jjrv - dscg
+tjrc: bcdv * gcwl
+rjmg: 7
+jztf: pmgn * fcph
+mpfq: 8
+tgmd: 2
+shjg: 7
+qdbg: jmfm + wbft
+snzz: ntml * slcj
+lrvf: 2
+cjsd: vgpb * hjmc
+ltvd: 3
+fvsf: 20
+bfsn: 11
+czwf: qprz + hngp
+ljqb: 4
+hngg: tgnw * pqbc
+wtnt: mvmc + bgmt
+jbbc: qrdf * tqjs
+jhmd: 4
+cnfh: 5
+fdgz: 2
+mnvd: 2
+ldrw: mgcq + tgjj
+fbwn: fnzd * glsw
+mmjg: fzqq / wlzl
+wjvr: bszs + ccfb
+drdr: fbmf + mbgj
+vvsh: qcws * qwhd
+vnhc: ljwd * cwzj
+nlsn: 2
+lvzp: 5
+qsrr: 5
+zdwf: hcfv - mvgq
+hpvw: ghqn * hgch
+dscg: jfcl * pdpt
+hwqs: fpmg * vtbd
+zmjv: sdbl + qgjm
+snvc: pbwj * spbq
+wpjn: ggqg + zflc
+zdjm: 2
+qfhm: 8
+fzpc: sfbw + srbr
+lshn: 5
+fbwh: 6
+mldw: cwlc + pjtv
+jpvj: 5
+gnwf: wvwz * dvtt
+ctsw: 3
+npzh: rmqm * jmrl
+thnr: lsdp + mcwt
+cnzt: swqc * tzvt
+lzhl: nwtz + fnhz
+ffzj: fvfp + spdz
+qvsp: gdqj + fbwn
+zctz: 2
+tqbn: 12
+wlpv: rrqw + gpcp
+hmft: 2
+vgsf: wggr * jqdp
+sfqb: 5
+pdps: nsrj * sqsg
+lzgf: 19
+npdl: jpjg * scjj
+bcph: dnjs * jznp
+bmmm: nfqq * lmfz
+hfzd: 15
+wngb: 2
+trfc: 3
+mzld: zwwr * msbh
+rdrw: lmdf + hmbt
+mgwg: 2
+sgrr: llvl * wcgm
+vcfl: 2
+vqrr: 2
+mlwq: 2
+gnjl: wgsq + llmj
+bmch: 3
+cvfd: stzc - tzqz
+lhbw: 14
+bzhn: cblb + fmmw
+zjgt: 17
+tbsp: 2
+hvbl: 4
+lfwt: 6
+vrst: mlhc * gnwb
+lfsj: tllh * llmh
+phvw: 5
+nnps: zqws - qfvh
+vnlh: 2
+lbbc: zmjt + wqhn
+dflp: 3
+tcfl: 3
+lcqm: nsjg + mzsj
+wwdw: ltvd * pwjs
+gfdv: 4
+wglp: rcrp * gpwb
+wggr: 2
+mtjn: cdlg * dljt
+vctw: rzvn * hmlg
+ftlz: 2
+wvcs: 11
+mcgh: thnr * fhjr
+rcht: dhsg * jhwz
+gltc: 5
+rtsb: 2
+crnw: 4
+vrbh: 3
+thrg: lrrg + zrjs
+zdqp: 5
+gqsp: nbds * hgst
+bhdc: qvmn * bqdl
+wbvc: 2
+htqq: 3
+sgzq: shdt * lfwt
+pqbg: mdfn + qczc
+zlsz: zdmq * gwgf
+gqsr: vbzr * nvpt
+zcsq: 14
+tfgw: tcnr * rnvz
+jpsj: nbmd * gcgg
+cczj: bwdm + dfgz
+tbnn: 3
+qdnb: 11
+cdmm: 3
+cjlb: mgvr * fvcs
+hcdv: 4
+flfq: 2
+zdbm: 4
+blvz: 4
+btnj: 3
+whsz: 2
+jpnd: grht - jcfg
+grjz: 10
+tprv: 7
+wtmc: mlbb + pthg
+nlfl: 11
+nzss: 3
+frfl: lzjq * rsfb
+pwjs: wbmz + mzld
+bfts: hjmf * jtzm
+bzmt: 7
+nbds: 5
+dztv: 2
+mzwc: 2
+jppn: vgwc + qvsp
+wjhh: 8
+jlgg: qqmq / cbjz
+lbzm: nhmf - qfhm
+fqcl: zfpj * mzwl
+fdjv: 4
+vrdq: wwzj * gdpp
+gtmm: wrwr * vnvg
+vlfn: 3
+dtdw: 2
+bszs: jfvc * bscq
+chvj: 3
+zfbs: pbwm - cdln
+ctrq: ttbp * fqld
+fcpv: dtvv * bclj
+gqll: hbrv + lgdv
+ctjp: 7
+snqw: ffhv * bfwm
+dvtt: rlmf + nztz
+tzws: 20
+vwfn: 2
+cwgj: 5
+qtjq: qqst * jhrr
+cwgf: 3
+mrfh: gmgr + mzgq
+wvnl: ccqb + gctz
+btcr: wbqs + qcqv
+gfjr: 2
+dbsr: 5
+jdmq: ctrq + cpmh
+sdtq: dnjn - mlmp
+fbtr: flpb * mgbr
+mpgw: 5
+tvlf: 11
+bzmr: 1
+qwfb: pngp * qtjq
+mqss: tjvn * vhht
+jqdp: wvqg + thzm
+mnwh: 15
+qvbv: ffqd * fnjq
+rqgb: ddhd / clvj
+thhw: gsmw * ldrw
+pfvc: 3
+sgmz: 2
+fdcp: 2
+rctj: 17
+brgl: 2
+pgtd: 2
+fqth: wqgl - rznp
+fzst: 2
+cdqz: jcpl / vwhq
+pcwg: hshm * ntdm
+zdmf: 7
+trht: 3
+nhsb: scbg + vjfw
+tzlw: jpwp * jscr
+hbrv: bzbr * wshb
+dvtn: lhqc / mgwg
+qgnh: 2
+crwj: gfmv * djjp
+thgn: flwb + lrvh
+ddss: gjfm * smnp
+ttlc: jgnm * wcbj
+qrfq: vpsv + smct
+tlgn: 2
+fsqn: 4
+rqdq: 3
+dlpr: 2
+jpqm: hsbd + mnvp
+qjmv: nlnv * clgf
+snpf: 5
+wjnl: 2
+drzl: bqsv + gjwt
+hbnt: nllg * jntf
+qbsq: nftn + zcsq
+lfzz: 1
+hhmg: dsfc * lbnq
+ghsw: 5
+hwcg: snnf * nsdn
+wsfq: 8
+vsts: 2
+blmn: 3
+fhdp: zmtw * cljf
+qrlb: scsc + spnt
+wrgh: mvfb * jwgv
+vbdr: 16
+jjcm: 16
+jvzs: lrvf * vsnw
+fsnt: rqvd + vwjf
+wrbn: llmr + fpzn
+ddjw: vmfl - bfvn
+zqws: 9
+blvr: wjns + hffv
+ncjl: 3
+rzqz: chdn + wzwj
+tsfn: 3
+drns: jfnz + zjsw
+jwgv: cppp * zctz
+prqf: vcqp * ftlz
+glpd: 16
+slwj: jwcl * lmwg
+whzh: 2
+vljz: 5
+rnvz: 2
+zzgd: bnlt + ltgv
+rlfw: 2
+tmzq: bvrp + pcwg
+dqtb: crwj + scqr
+tvgj: tmzs * vvbq
+bncm: 13
+rshj: 4
+jpjg: 3
+ghnr: jwrb + jdlr
+lmdf: 5
+drbd: gpss * jpvj
+csml: qdlm * tprv
+bzrz: pqnw * qhdr
+hvvs: 6
+hgrd: nrnj + qdbg
+fqtw: rvdt + vnhc
+wgpl: vzsp + ztqj
+fsjw: bqww - jsgn
+zcdr: mqsb + sswh
+bvhz: gvtp * lpsq
+pgtl: fchh / tzrf
+rtfz: stqt * tdzt
+ltqb: 6
+rcsd: jhjg + gmmf
+srlb: 3
+zhhf: 3
+dppp: 13
+sdsc: 1
+gmgr: mzwc * rhww
+fqbs: dbcb * ddww
+ttsm: 2
+wjlt: 5
+rszf: cwgj * cwbm
+zdwt: 2
+tqlb: 2
+wqdw: zsvl - fsvm
+szsh: 17
+vwwr: 2
+jfvc: 17
+qvvw: cwbn - hqtc
+tlvm: trbr + cmtt
+cppp: 3
+jrqd: mjcw + zfff
+vbnw: 4
+mvtw: vbsn + gjmr
+fnzd: 2
+ffsz: 3
+zlsr: chvf - wrbn
+qrbv: gplm * dlgz
+zvgb: sjst * vnqm
+mddj: 2
+cwbm: 2
+zvhw: 6
+sjlb: vjhl * zmnw
+mplm: tnwl + qfbm
+wfrw: 2
+hwnf: vqph + bzmr
+zrrq: hwhq * msww
+jvsj: fbfb * lnmw
+wzwj: 4
+jfnz: lwhr + fbls
+qhzq: wfhb * gwfb
+jqhs: zpjc + fqqz
+hvdn: ppbn * rzfd
+plvh: 6
+wtrd: lcjn + jlgg
+ccqs: 17
+mstm: 2
+bgfh: 3
+plqt: 5
+wjvt: 17
+mqdr: 2
+gtbm: sqcq * jlzd
+jqps: 3
+hcqp: 6
+tfwd: 2
+rgvd: 8
+pggf: 3
+tpsg: tzdt - dvrg
+gmll: jcdc * ztbh
+dvcl: nrrg + wrqq
+twpn: jzcz + vbnw
+mflw: pqdl * dqvd
+qzgt: qmjf + hwmz
+sctl: 5
+zvsf: wlhz * ccvj
+rlvq: 5
+spnt: mqdt + qcpr
+rrgb: 19
+gfqr: 3
+zhth: mvjf * dsbl
+ncfh: 2
+rmgz: phls * tqlb
+ljts: vdhj + dngw
+fvhs: 2
+jmrl: btvd * bgsm
+jlhm: 17
+phdd: sgdj + wfwb
+qtln: jqnf * vbjd
+flgh: ztjv + ddlc
+mqlg: 6
+gtpw: 12
+nsdn: 14
+wbqs: bzzn + srbm
+lnmw: 2
+ldvg: 1
+rgzd: vrhf * jvwr
+qmnn: mssh * drnz
+qvmn: 16
+tzld: 4
+jjqz: vvsh + jhhr
+wfhb: 5
+sdfd: 4
+tlqp: 1
+nnqc: 5
+hhzw: 2
+jvpw: ztlw + hswb
+pzpl: 3
+bgrg: qpcn * clpp
+mzgq: lsgc * jppn
+vbjd: 4
+rlrg: 2
+vqzj: wbnd + zvsf
+bcrq: qbmr * wfsf
+zjnt: vdcz * nnps
+mnvp: tbfd - rgvd
+wtdd: nfwh * lfmv
+wtdm: 5
+dtvv: glww + pznc
+wzgc: bmch * fdhw
+qjtv: 3
+gvsw: 2
+vtnc: sscd + whqz
+flqs: jwmm + vfqj
+slmc: 2
+qqmn: hvrt + tfdb
+sjrd: 2
+rsfb: 3
+lrlp: 6
+cwzj: 3
+lgnm: 10
+mngb: 7
+vbrl: 4
+fpfg: 3
+nmhp: 10
+qsrn: rmmn + brgz
+jwrb: hnvg + wfsp
+wqgl: 15
+jcdc: 3
+lnpj: 2
+jmmb: 2
+mmmv: sswv + jdwj
+gczv: qmlg * pqtb
+lrfj: hvwp * qrgs
+qztl: 5
+dfwj: 6
+rdjr: hlcz + lzmb
+vnhg: 14
+nlrf: pqvh - rmqp
+ztlw: chhz + nsrd
+dpzb: ldzw + jcwc
+bdqh: ppnc * rlvq
+qzwn: cgqz * pvvr
+cvmb: 10
+dfcr: 2
+wmvr: 2
+zqnb: 2
+rsll: bjzd * gdtv
+qqnz: zfgn * crll
+ppbn: 5
+blpj: 2
+hgcj: 19
+wgsq: vdnr * jlqc
+ljmm: 4
+scnb: 3
+dbjv: qfwp * dmbc
+wrwr: nnnv * nltn
+fvbf: qlwq * wbsh
+rzrn: jwsf * vvvt
+lhqc: rpqr * hwcz
+vvvt: 13
+rqbf: lpph + mzpl
+bjzd: thbc * vppj
+fmmr: whjj - tpql
+lfqm: bncn - zmdb
+zmgq: chcz - fmbg
+zdzf: pqfl + zdwf
+ntdm: 17
+lhtn: gvsw * nbpj
+ffqd: 3
+jhhr: lnsd * sdfd
+rzvn: 2
+vlzp: qjhs * snpf
+cnmh: bfpz + zblh
+qszn: vmnb + bchg
+sjfv: 5
+fbmd: 5
+hgrq: wsdz * wrlr
+pqtz: 2
+dtmw: nnmr * dvtn
+qwsv: jwft * qdfn
+vjfw: crjv * jzmf
+wlzl: 2
+twjr: ljhb - hwcg
+dmbc: bmmm - lbtz
+zsvl: zwjf + ggjq
+cttr: 2
+vqph: cpbm + dbhw
+bqwr: hjwq - wlzw
+tmnm: 1
+fcfj: 2
+rwsm: mpfq + nwnj
+qjtz: 1
+tdzt: 3
+mhpj: 13
+zjjz: bbwh + qsbs
+jcnj: bzgd / dlpr
+dsfl: 4
+rwsc: vdfj * jcts
+mssh: 2
+bfwm: vwms + bgrg
+njsq: 2
+hqjd: 2
+qdrj: 2
+nscv: 2
+tdns: 3
+mqqw: wgrw * ghqf
+mvnb: dqgf * ndgh
+ztjj: 2
+tzdt: wpdw / zmpt
+fnjq: 3
+qfjp: tshp + fcpv
+bscq: 3
+pqfl: cjdv * nmzl
+ttcv: nlsn * jghn
+twhn: lpmp * hcvg
+mdpq: 2
+cbzh: dsfs * pfvc
+wtsc: lzhl + vbhz
+pmlf: szvq / pfdh
+gdzb: mvnb + mblj
+cqhm: 11
+dqvd: 3
+jtzf: 18
+cdvl: 2
+gdtv: ldhz / jhhl
+wjjn: 3
+dsfc: 7
+jcwc: sgzn + wpjn
+zgtf: fhlg * gpwr
+sdff: 7
+hhgw: bpfm + sgvw
+nrgp: fdwp * phnc
+thvn: gblh * wzrw
+dnfz: pcml - dhvq
+hvgh: gtzv * zzbl
+tllh: 2
+nzbj: 2
+nwtn: 5
+gjmr: 4
+swqc: 5
+rlmf: 2
+tfqc: dcql * bfrv
+fvpr: brdv - cnrs
+lfmv: 2
+crll: 2
+dsgz: fgbv * scnb
+bgvj: hghn + qbbj
+lrcd: lcgs + gqsr
+dpzc: gbtg * jpmn
+qlzt: 2
+sgzn: brbw * hwgc
+fbls: 8
+nclm: 9
+nwlg: lhtn - vrsd
+lwpd: 3
+fddh: 5
+vhnp: jvnh + zvwq
+qzvz: 11
+hwmz: cvvl + rplr
+dngw: 4
+qqwj: 8
+rdbb: 4
+pcgl: dvdq + zpvh
+mmcd: 2
+rmqp: 19
+mvmc: 17
+djgt: bwtd + qrlh
+nghz: gdpg + dldc
+rqvd: fqmv * gfqr
+wvqg: qwfb + lgmt
+hnvg: zjsp * zqhw
+rqcn: gvpr * hjzl
+slmm: 6
+hvwp: 2
+pvzs: 13
+gslv: 3
+rhww: hbqn + cdqs
+wnmz: tmnm + vtnz
+wwzj: 5
+hcll: rhrr * drns
+prrp: tmzq * nswp
+tpgm: twhn + vhng
+whbn: 12
+hghn: sfcz * jrfv
+zrfz: vshr + qwsv
+vcbm: 2
+qtjg: brgl + qztl
+ljbw: tjtz * rqdq
+tvmd: 6
+mppm: fhlp * nsmz
+nnmr: 2
+sdwv: sgrr + hctq
+bbwc: 4
+ncpr: jrvd - qwbz
+wjgl: 20
+fjsh: 8
+jjvh: 2
+svrj: 2
+wgrw: 2
+vjlb: 17
+nttp: cbjm * cgmt
+sqcq: 3
+rvmr: zvrr * vwfn
+jvcq: lhbp + lshn
+gpwb: hhgw + wzfc
+qbbj: mqrg / twdj
+rzfd: 2
+vcbf: qgtv + mrzr
+gwfb: jjzm + tlrd
+fjlf: dnqc + clmw
+pbwm: 12
+trvq: hqqj + vsvg
+nswp: 2
+qjvm: 2
+qldz: wctr - gmrn
+pbql: 7
+pvsc: wgpl * hbjm
+mbnl: 3
+pcpc: mhrw * bwft
+nwch: fhpt * htqq
+gqsn: 10
+tshp: vgsf * blpj
+tbcl: 6
+wzwq: nbwq + blvr
+nsnn: 7
+shdt: tdns * jpfc
+ntpm: 7
+jmbh: 4
+jvcn: wrdc + tcbw
+djqg: nlmn + wwpc
+qgnn: 4
+chcz: 10
+ccvj: 4
+cnsd: 5
+hrjw: 3
+znzc: 19
+ggqg: 9
+gvsl: rtrq + vtpw
+rthz: ltqb * zzwm
+tjvn: 2
+fjmq: 2
+bgmt: 5
+mlbm: 2
+pqbc: 2
+cqjz: 1
+mrzr: 2
+cmdw: lvfr * cmqn
+ncsl: 3
+fbrq: 3
+nftc: 12
+vlwd: lprc * rvwv
+zzbm: bgvj + tnll
+bdtj: 12
+llmh: 4
+rzmw: 2
+vdfj: 3
+wtjh: 1
+dwcw: wzvv * vcbm
+nzcg: pdbv * sscz
+jflc: rrst * mwwj
+spdz: ghsw + rbmq
+cnpp: 5
+sdbl: znbh * hgcj
+fbjv: 8
+lngl: zqbc + rcgh
+ctfw: jvst + jvlh
+qhzm: cbnc + bvqs
+hqgd: lmtw * hbvj
+qssh: ttcv + snsq
+cwlc: nzgb + hlgd
+mgsg: 6
+cjcf: zjwl * zfbs
+vnqm: 2
+wqtl: 8
+scst: 16
+bclj: scst + zmrt
+nqrv: zjjz - wtqb
+vzqs: 3
+wzfc: ggjd * srlb
+cscd: zlsr + qqvc
+dtmt: 2
+dqmj: 2
+gmmf: pqst * twdn
+fmqr: mpgw + mqtm
+llcf: 2
+wfsp: btjh * nfmm
+vwhl: 4
+hzjs: lwtc * cmnc
+wbft: czds * bncm
+rglv: lwrf + vwsf
+lzft: 2
+cgqm: 3
+zvhr: 3
+nzsf: 8
+rsdz: 12
+ntfz: 2
+dvwg: pzrm + bhnz
+bhnz: 5
+cmsg: dtsq * rnpg
+wljn: mqdr * spln
+zwpz: 11
+cnmp: wzpg + dshr
+gmds: rfds * hppw
+gftn: 3
+wbsh: trqs + pwpw
+fpzh: 1
+bgcm: gldw / dgrv
+nztz: 5
+mrhf: 1
+sqsg: 3
+dcql: 2
+hnhm: 2
+wbmz: zdzf - flqs
+jcts: 17
+vqrs: fznm + szsh
+zpqz: 7
+dljv: 3
+qgmj: lbbc / nzjc
+sjgq: dqhj + dgvb
+rjqb: gnqt + tbnf
+dqfr: lszh + mqvs
+vlfb: qjvm + hbrb
+gnsv: gtdj + lnhh
+mzvs: 3
+ndrt: rglv * bcjp
+vvsg: 12
+hlhw: fqcl - mrjw
+zfvg: llwq + ldvg
+hmwz: cqch + sdgp
+fpmh: 15
+wdjg: 3
+dcdj: 4
+gbng: 8
+glww: frcp - cqjz
+fjml: 2
+zzvh: 2
+vwjf: 2
+tjtz: qqfm * tcsd
+bpbb: 7
+sbnr: wnqb - qftz
+tjcv: jghw - tmpj
+dvtb: 4
+rwtc: 3
+thbc: 2
+ldbf: shpm * mddj
+wmwq: 11
+jjgq: 8
+wqmt: 2
+vzpl: mnwh + dzzp
+rcgh: 6
+gglj: bzhn * tcfc
+pqzp: qvbv + zhth
+gtjw: 2
+pbjl: 5
+jghn: ghvc + rvbt
+vrgc: fmqp * lwpd
+bsgt: gjlp * hvjf
+ltrc: fwjt * rqnq
+rvnh: hrjw * sgfv
+mwwj: 5
+njhm: fcfv * wjnl
+fcfv: 16
+gtdj: flht * mlwq
+sscd: snqw * gcwj
+pfsv: 3
+bvrp: shdv * vffp
+tzqz: qtfs * tvmn
+qqhh: jcjj * fmpt
+dvwd: 2
+jdlr: 4
+cpmh: brvd * hwsw
+wlvq: 4
+drqd: 5
+sdgp: tdmw / wlcb
+lzjq: 7
+chdn: 3
+tcsd: 5
+rqnq: 5
+pqcd: 4
+dzpb: nrmd * pmlf
+lhmj: hpcz - hvbl
+mmcl: 11
+sswv: mmll + zlvf
+zbrv: mgsr + btcr
+qlvw: 2
+vbsn: svrj * nfqv
+wlzw: rqnr * nsrf
+zmdq: jdgt * rhbn
+lzbs: hngg + cdtn
+zfff: whzh + dfdb
+nfwh: jvpw + qqhh
+dvdq: gwfh * dvpd
+gchs: rzmr * dhvn
+qprz: trvl * tscz
+cvhw: 5
+wlbr: vwhl * qdml
+dbtd: smrr * fprd
+vzfh: 19
+hqqj: njhm + jdpw
+fhqb: vmld / hmlh
+fmcl: 11
+srtg: lhbw / vmpj
+srwf: 3
+vnpf: qhzq / htwn
+ghvc: jzgm * zzll
+sdhz: bdtj * rqnn
+rhlg: bfzw * hhqg
+bzbr: hptm * mmcl
+vmlr: gqwq * zhzg
+qhdr: fhqb * dvvw
+ljnw: 2
+jvjf: nllv - cfjh
+jzmf: rvmr - srtp
+rjfc: djtl * vvrs
+zwsf: 3
+zblh: gwbm / fnhh
+jfcl: 3
+hbfq: 2
+rhnt: 2
+zmnw: 3
+qldh: gjnv * vbvw
+mjtb: 16
+rgqh: 2
+tdpg: 13
+hcvg: sldm + thgn
+tgnw: wmvr * jrdv
+fmmw: vzfz + tlqp
+hgbs: tqbn * lqww
+qqdl: 18
+fdfr: 3
+mlmp: 1
+qjbh: hfcm * ftjd
+mvmj: gctm * whbn
+qlwq: 16
+vhgb: 2
+jwgl: ljts * wzfv
+bgfv: qghw * mmss
+mdfn: hbzs * gtbm
+sjvs: 17
+wvbz: 2
+dfdb: 17
+wctr: tzlw * wffn
+lcgs: svhb / ztjj
+bjbf: 12
+cncs: 3
+zqbc: 1
+rvbt: tlnm + fcbr
+qszc: 4
+vcsv: hfjf + mqqw
+jbhc: gtbj + bnhr
+nztp: 7
+cnrm: lspf - pfsv
+mfvr: 5
+zzbl: 19
+zrfd: zmlm * nqlj
+jwcn: fsrf + vzqs
+nrpb: 2
+tqjc: mfgj + vbzt
+pglw: 2
+fvcl: 5
+vhng: sdhz + jflc
+wgbd: cdfc * mplm
+bpjz: pfjn * whlb
+whjj: bmpz + tlwh
+srhq: 4
+pqst: 2
+cbnc: rszs * qlzt
+szvq: jgcg * cdvl
+wfsf: 3
+wrqq: bcqz * vwbn
+hcqs: rfvc * mscg
+jsgn: 8
+nfsl: blvz + vlrj
+bggm: zjrw * rwsc
+gvpr: 2
+gtfs: nwmg + gsgd
+pwpv: wlfl + hfmp
+jltd: jzpt + lbcm
+mntb: rgdg - rzmw
+fnhz: tbnz * bpbb
+mwwf: cjlb + mtjn
+cgnz: 2
+tpsn: 6
+bbhm: 16
+pqjw: rqgb * jpmd
+pcml: bvdf * lfnl
+pwpw: 2
+cjmt: 3
+rbmq: bbgp * nlwb
+wjns: 5
+jjqq: wtnt + fvhh
+jmdp: blbw * csml
+tgcb: fmmr / fqff
+ffjw: qvpl * wmwq
+humn: 2796
+ngjl: 2
+swwz: rzrn * sjlc
+pvbs: 2
+hfqz: 3
+mbgj: vnml / pzpl
+dcrc: 5
+slmn: 2
+pjtj: fhqq + qzfr
+ldnm: 3
+lwnc: mvvr * nbwt
+zpjc: 20
+lmfz: qgmj + cjsd
+bnhr: wrgh + vbdr
+gcwl: svpj * ncsl
+ljwd: 3
+rvlr: 5
+fdft: wglp + vqln
+bpfm: 1
+zcpz: rgzj * gbdb
+zmrt: 7
+tzrf: 3
+fdwp: rvlr * wgdv
+rgpp: vlnm * wczh
+qgtv: 5
+wqhn: fzpc + hwqs
+cwmr: 4
+nsrd: ltrc + blgt
+cdfc: qcbf * zdbm
+clpp: 2
+qqvc: jcnj + prrp
+brvd: 4
+vwbn: 3
+lmtw: chdw + jfwq
+vdfh: jwgl + vdwc
+pnlp: bsvl * mwvm
+shjh: 17
+cnrs: dvtb * qsqm
+dbnw: qmnn - vjgb
+mgcq: 6
+jhmz: 5
+tmzs: vdzg / hnbj
+qqcb: zvnj + qzvz
+jrvd: srmf * qnzm
+vlrj: prfb + mrhf
+tsdt: 4
+mbtp: 2
+lchm: 4
+dcgz: 4
+fvcs: 2
+zsql: 2
+dshr: 5
+dzzp: 3
+grbp: zjgt + fvsf
+tsrs: jwcn + mncn
+cdjz: wtdm + scvs
+fnhh: 5
+fdff: 5
+htls: 2
+wcrc: vljd + bttt
+jcpl: sddd * qvfs
+zvnj: flfq * wqdw
+dfnr: dlfh / cvld
+lnsd: 17
+cbtb: 2
+sptb: 3
+gvjc: bfts + ltln
+tjnj: hmft * dsqp
+fvfg: 2
+sscz: 15
+rdvd: 3
+wpth: 2
+mqsb: bzrz / llcf
+brlj: 8
+hhqg: 4
+nbpj: 5
+zmzl: 9
+gplm: 2
+vwhq: 4
+pbwj: 11
+srbm: 2
+rjdr: 2
+ndzg: hbpc * rffm
+pqbp: stdt + qbsq
+bwqb: hqhl * twpn
+pdgr: lczz * tgng
+fvzd: 13
+qpmh: bbwc * qgnh
+gshj: ppqj - qpmh
+fcph: 5
+jwzh: fdff * hplf
+blbq: 2
+qnzd: 4
+dbhw: 15
+zprj: 4
+tgsq: 2
+rcrp: qdbv + crnw
+srhg: dcrb + ldwt
+tlrd: dvwg * vfht
+fngv: 4
+gwfh: pcpc + snvc
+mpsp: wbfd + gftn
+gsmw: dngp + rwsm
+fhqq: zwsf * qthv
+vwsf: 3
+cbnf: 1
+bvfd: 11
+qvfs: 6
+jtzm: wbdp * fvhs
+sllm: dcrc * wljn
+tpfj: 6
+fmvr: 4
+rmqm: dvlz + nrsc
+slps: fjmq * jqhs
+rffm: wfpf * sjgq
+rzmr: 2
+hbzs: fddh * wjjn
+fphq: vlzp + jmdp
+gpqw: 5
+cdlz: jvjr + vhtl
+vsvg: bhnr * rszf
+hmlg: 4
+qvrl: qpmj * btdf
+stqt: 3
+zmpt: wczj + sptb
+fqld: 3
+mqtm: lpnd + tjht
+ncjq: 19
+hhbg: 14
+pfdh: 2
+vmpj: 2
+gpwr: rlhd - bvsr
+lpph: mflw - mhpt
+msnd: vtnc / jqlz
+qjfn: qqcb + lfqm
+jhrr: 14
+nlmn: gltc * sqhd
+drjw: 2
+smnp: 2
+bhrz: 3
+zrpq: 11
+vvrs: 3
+mgsr: 4
+fqmv: 3
+dhvn: 3
+nslj: 2
+rqsg: flgh * hvzd
+mfnj: rpnd + vzhs
+btwp: qdcd * lrcd
+wqbm: wvbz * bmtd
+wftp: 3
+hwgc: 3
+ntml: fwgq + cbmr
+whqz: fjml * fznj
+rpqr: 2
+jwrd: 3
+lmcm: qndt / qdgc
+nchq: 2
+dbbr: msnd - hgbs
+rmqz: 2
+pscc: vscm + gsmh
+mqdt: wmdw * bgfh
+bnpf: wlvp / vhgb
+lnpc: fbjv * sjrd
+ndgh: 17
+mzwl: 3
+zhcb: rsqc * cwsc
+bqfz: qpvl + qrfq
+jrwb: 5
+gldw: jltd + zzjv
+cdqb: bjbd + sbnr
+lhfj: 3
+jfbd: 11
+ghdl: 3
+pdbg: zjcr * wrvb
+qdbv: 3
+ccdn: 4
+brgz: zmgq * vgtf
+dvpd: 17
+hgzw: 1
+qzzb: wsfq * drdr
+qbmr: 3
+jvjr: ltzp * rjfv
+lqbt: wnmf + lvct
+hmlh: 2
+wlhm: 2
+nwdc: tvns * rfwd
+tzvt: 7
+pdsm: 2
+qpvl: hqcg + bpbl
+wrlr: 18
+vzwq: dqtb * tzhj
+vvbq: 3
+spbq: 2
+lmwg: 2
+wcbj: 5
+tmqv: 5
+tvns: pgtl - hmql
+fhlp: 6
+smct: ddpp * dwmq
+dtdc: grtn * fzds
+vrhf: 7
+jgfh: 10
+rrst: 2
+fhqm: zqfb + mldw
+pzrm: 2
+bjns: 8
+vrgz: fbrq * vlqh
+dfrp: 3
+ffvb: 2
+hptm: 7
+wzsn: 3
+bvhh: qhqc * crts
+rmmn: dcgz * lnpc
+rgdt: plvh * wwdw
+pdgl: nztp * hzrn
+lswd: 4
+mzpl: 16
+cvsr: tcbh + jpqm
+gjzd: jfzn * cgnz
+nspz: qdnb * nbgr
+vvtg: srhg + qpdl
+rfvc: 12
+vdzm: vqrr * lhmj
+bbsw: 2
+zlrj: 2
+gsfq: lvgd * rgzd
+hwhq: rzqz * fvnd
+rtjq: cnpp + hgzw
+vmgw: 2
+dqhj: thhw + pjtj
+hjbn: tpzl * nttp
+jfzn: hfzd + wljq
+fzjb: cbzz + cftr
+vpsv: cscd / gtjw
+cgpq: pjcr + tbdr
+wdnf: hhzw * fmms
+mbhl: 3
+pqdl: 3
+jqjg: 5
+zrsd: 2
+mlbb: 4
+snnf: 2
+wlcb: 2
+jpmd: dghl + btnj
+hddf: vwds + fhrp
+hgdw: 17
+bhpr: 3
+bbwh: fqbs + bjdn
+gmgm: sdwv * vrdq
+rtpp: wfrw * mtwj
+zjrw: 7
+trbr: 4
+lhqr: fjsh * mjbv
+pwzw: tfwt / nbts
+fwgq: 1
+stdt: vrbh * nvwn
+gzsc: rpct + nzlr
+zjwh: 3
+ddpp: bfmp * dzsc
+ztbh: 3
+shdb: 2
+sclj: 4
+jdwj: ddlg + dgzl
+zbnw: 1
+mdhv: 13
+dcnn: rlfw * zzbm
+frbn: fqln + dfcr
+qpdw: mnvd * hfnc
+bbnc: wjmh - ldbf
+fgfz: zbrv * zflr
+llqq: 4
+qhsp: 2
+lrvh: 13
+djht: 6
+ghqf: hlzm - rscb
+fmpt: 3
+rnwh: humn - qpdw
+fzpl: 2
+pdpt: bbmh + mwwf
+ddlc: ndzg * cdlz
+fchh: nhsb + pwzw
+tcdd: 3
+stfd: 2
+lsgc: bbnc + fjmw
+rszs: 11
+sgfv: 9
+qvpl: 5
+vzrt: ngps + vlwd
+dqsq: cbzh + jvzs
+hlgd: tnlv * ljnw
+gdqj: 2
+sqpc: 19
+vdpv: bgtn + zprj
+dmsp: 2
+vmnb: gchs * jtzf
+rgpw: wdjg + bbps
+vfqj: vjqc + nwml
+rszr: 4
+prfb: 6
+ldhz: grbp - dhtr
+tgbj: tgmd * rhsn
+twzw: rcht + pszh
+cjmf: nmpz + hmwz
+tgjj: 1
+ggjd: 2
+rwvp: 3
+qndt: mbvv / ljwb
+vpch: fmvr * gwzb
+pjqw: fpzh + mvtw
+wrdc: 7
+djtl: sttq + hmcm
+lwpw: tttg + bsmg
+mrsz: cdmm + tfgw
+qqmq: dbjv + qssh
+zjcr: 8
+mwdf: 6
+sfbw: nwls - vfbg
+rhsp: ndzq + hjqp
+zvrr: fmnm + bvfd
+jwsf: 3
+mljs: 4
+wjmh: zvgb + frfl
+vgpb: hnzn - vmhw
+tvmn: 3
+jcbn: 16
+mvgq: nlrf / nrps
+qfvh: 1
+hgsg: 3
+hjmf: dmdd * tdsb
+jjzm: 8
+wphb: 2
+pqtb: vnpf * qlvw
+cftr: 1
+lnhh: cvsr + gnjl
+mchf: 2
+jvvm: 11
+vwms: ctfw + bjbf
+gblh: 3
+dvgt: pftp / qhsp
+cdqs: hcrv * czwf
+pzln: gznp * vlns
+ppnc: 5
+gcwr: rjhl * rwmf
+qmvm: wjvr * shwp
+ccbq: 5
+gcgg: 15
+zwjb: 13
+vzfz: 5
+jwcl: gzcg + jvsj
+fdqr: 2
+zfmj: 5
+dnjs: pptw + ljmb
+vjgb: dfrp * fmcl
+pdvc: 4
+wnqb: jlwl * dqmj
+mnzf: 8
+lspf: fzpl * jgfh
+jwmm: thvn + bbhm
+bhnr: 10
+flht: jvlm * ggvn
+wsdz: ljgd - fnvr
+frlg: cvhw * mfpf
+vwds: 2
+qmsm: 8
+qmlg: 4
+rjhl: cttr + qghb
+zsln: 13
+wczh: srbt * fczr
+jpwp: 13
+mmfp: hqgd * rjtp
+nrrf: 2
+hlcz: wqbm * cjhm
+rfrz: jjqq + ljqb
+zmjt: vmlr + rdjr
+scbg: mvmj + tvgj
+pmgn: 2
+bcjp: 2
+szgm: dpzc + npzh
+qcws: 5
+qhqc: 19
+ggjz: 15
+prsc: wzjd + vfjl
+jpfc: 2
+rdgm: 13
+dcfb: 14
+rznp: 4
+mhcs: zcpb - mzpq
+mgvr: 17
+lqww: 2
+phls: qzwn / tvmd
+hpcz: sfqb * flcf
+crgp: 2
+lfrl: tdff + btwp
+clmw: fhqm * qldh
+whlb: 2
+hplf: mppm + cggl
+qcbf: 5
+jjcn: 2
+trjj: grmp * zjwh
+gtcr: qrwr + rqbf
+bchg: pwwt / lcqm
+ddjl: rjfc / bfqh
+vhht: brfp + nnqc
+wfdw: 4
+jlwl: crgp * ljmm
+tmjw: 7
+mmss: 4
+vscm: gbng * vrgc
+zvdp: 2
+llvl: 2
+nmst: 15
+djjp: rdng * vljz
+qsqm: 3
+ftjd: 3
+pjtv: lnpj * pcfh
+mfpf: 5
+nvsn: 3
+jgcg: tfqc + jbhc
+mbzf: rrtd * fsnt
+smrr: 7
+wzjf: 5
+lrrg: jwzh * cczm
+jzpt: mrtg * lgzl
+qpdt: 2
+mlhc: gfdg * zrfz
+dzvl: fdjv + prvb
+vdnr: 2
+snhn: 6
+vtbd: 3
+jjrv: lbzh * wtrd
+fhjr: 2
+fmmn: zzwq + lfzz
+fvql: 7
+dlzc: qhdt + lbsl
+fhrp: 5
+vshr: wvzc / mngb
+nzgb: tbsj * wnbh
+tfwt: bpjz - sllm
+lwtc: 3
+jqlz: 2
+tcnr: 13
+zmdb: 2
+dhrt: rwps * vzrt
+llmj: wzjm * qmsm
+jvlh: wjhh * hqvt
+jgnm: 2
+dnqz: dhdr + qsrn
+zlvf: shdb * dwhc
+gctz: mnzs * mrsz
+jlqc: mgbq + msmz
+bjdn: pbql + qvjf
+trzn: 2
+vzwb: 3
+rvsb: 5
+qlrt: vmqm * ggjz
+bvqs: 1
+gcwj: 2
+jlgs: 9
+bqsv: mbhl * rwvp
+gpcp: 5
+bqdl: 2
+vgmn: 4
+lhbp: 2
+hhsm: ntfz * cczj
+cmnc: 9
+dmdd: 8
+dfmw: qswz + nlfl
+qqjb: 2
+zcdb: mldl + mzvt
+bgtn: 9
+drbn: 4
+gdzt: frtn * hszr
+glsw: qjmv / nchq
+hngp: shqb + rcgn
+dmtc: 5
+lrwt: dqfr * gzsc
+dnqc: nfmq + zqzg
+shzl: 4
+sstr: 8
+fhlg: 4
+pdch: 3
+qpdl: nrgp / chvj
+jscr: mmfp + vzwq
+pthg: 7
+zwqm: mhnn * gnjf
+wfwb: 11
+qrdf: sdff * gfjr
+gdpg: 5
+fmms: 4
+jbfc: 2
+qgbd: 8
+gcfl: 3
+pftp: ccdn + qrbv
+jhhl: 2
+wbdp: 3
+rvns: 2
+bbmh: qchv * nwhf
+zfrz: gmll * nsnn
+mthr: tpsn + vzfh
+wbfd: 4
+hgch: 6
+lvfr: 12
+nhmf: nwch * trzn
+tbzq: bvhh + fbtr
+vlnm: trfc * tqzr
+qqfm: 5
+fznj: nstv * zqlr
+ssrg: 2
+cdzr: 3
+vffp: 5
+hshm: 3
+grmp: 3
+nzdw: 5
+nqlj: qjfn / wzsn
+thdv: rnqp + wprs
+vgwc: 1
+mgbr: 3
+qfwp: 2
+mvfb: 6
+nzgf: tjnj + mhpj
+qrlh: dcfb / wtpq
+pnwg: jqjg * mjtb
+hfjf: cmdw + zpdn
+ssln: fpfg * qvrl
+nlwb: bqbd * ncjl
+vcqp: 3
+hjwq: cswd * tjrc
+rvwv: 2
+mhrw: 3
+mgbq: npfq * zcbb
+prbt: stdw + zcdr
+sjlc: mmtw + zdwt
+dhsg: dvwd + hvvs
+nbwt: 13
+ghqn: tlvm * lflv
+hllh: 2
+czds: 2
+nsjg: 2
+hmql: qqdl + trvq
+tqcm: bwqb + phdd
+sthb: zmjv * bncr
+tdmw: ddss * pwmq
+jzgm: 15
+ztqj: 9
+sjst: 11
+tgzd: 9
+gwdf: 4
+jfwq: mchf * lzpm
+zwdl: 2
+tfhw: 3
+qzfr: qlzv * mbzf
+root: wgbd + rqsg
+nqhh: 3
+mblj: bvhz + nzgf
+vppj: 9
+qcqv: 2
+wpvg: 2
+hbrb: 15
+vvdq: zrfd + fbmd
+mqwv: 3
+jcvc: 3
+scsc: phvw + qvqw
+gmrn: lvsj / gqsn
+pngp: wjqg * tmjw
+vdhj: 3
+cjdv: 16
+gctm: mqfd + rctj
+vmpw: 3
+ngps: dldp - tcfl
+fnpq: tqcm * lzmr
+tlnm: pglw * pbjl
+vdcz: ddjl / nrpb
+tgdr: 2
+gdgr: 4
+wbnd: sgzq / zdrv
+rwps: 2
+nrrg: gzhp / pqtz
+dvlz: wpwm * qtjg
+jcfg: 6
+vgtf: 5
+cvvl: 10
+fmqp: nqhh * mfcp
+pvvr: 2
+vlqh: 2
+fqff: 2
+bfqh: 2
+rplr: 1
+dbvq: 2
+wcrp: 4
+qhns: 2
+jhmp: cgqm * pvbs
+nwnj: blmn + shzl
+frvv: 4
+qstb: 2
+lhtm: 5
+twdj: 2
+mzsj: 5
+qczc: dnfz / wphb
+rhrr: 11
+zvdr: 4
+vbzt: qszc * rgqh
+fzds: cdzr * nclm
+lzmb: hgzp * zdjm
+mvjf: vcbf + snhn
+dnjn: qqnz * bhpr
+rsjp: zgtf + gvjc
+lbtz: wtdd * djht
+lwrf: pdsm * vvpl
+hmbt: 2
+vmbp: hcnt * zdmf
+dhjm: 3
+dsfs: pwfl * srwf
+rwmf: 2
+jznp: jwtz - sdsc
+djjh: fptm + hzhb
+dsqp: sjlb - qqwj
+fmbg: 1
+scww: 10
+lvgd: 2
+bmbl: 7
+hmcm: 7
+dlnq: 5
+cccj: 2
+znmm: htvb * qhzm
+dldp: vcnd + chtf
+npfq: 6
+bpfj: cnmp + rgpp
+pdbv: bgdc * zrpq
+znbh: 3
+nbgr: wlwt * sjfv
+jlhw: 6
+wclj: 3
+znmv: zzgd * jjvh
+wzrw: ffzj - vcvn
+jvnh: sgmz + cdjz
+cmnw: zltt + rdgm
+vvpl: 7
+fjmw: zlrj * zvdr
+bgsm: fgzt + bcph
+cqch: prbt + dnqz
+scjj: 2
+btvd: dbnw + gcqz
+jqvr: hvdh + hcqs
+ggnz: 13
+rsdc: dflp * bhrz
+lcsg: 1
+npmz: hgrd + hhmg
+zzwm: pjbm + fbwh
+chdw: 3
+cswd: 3
+dfgz: rhnt * rlrb
+hjzl: 5
+grht: glfp + hqtl
+dljt: 5
+qpcn: wnmz * shjg
+srbr: rfrz * hvdn
+hgzp: rmdd / dmsp
+pfjn: phlr + nmhb
+gmns: wlhm * znts
+wzfv: ppmg * cqhm
+qrgs: 3
+mbjb: mqlg + hqft
+clcl: dppp * tsdt
+qthv: nrrf * vpgr
+glfp: 3
+nldw: mzgc + wptn
+pqdg: 3
+fdww: smlp / jpjq
+sgdj: mqwv * rhlg
+gbtg: bnds - pscc
+nhlh: 3
+rfds: 3
+vdzg: wlbr + gsfq
+svpj: hnhm + rjmg
+ltzp: 5
+lscc: 10
+brbw: 2
+tpzs: 4
+mmll: 2
+bcdv: 3
+lbtn: 2
+jdpw: rwtc * jcvc
+tscz: 2
+snhp: wcrp * hddf
+fbmf: 1
+jwft: 2
+gvtp: gcwr / lflq
+tpql: gslv + vpdj
+jvwr: dbpd - jqps
+sfcz: 3
+wlvp: zrrq / gjlr
+rlhd: dtmw + pdgl
+bwft: 9
+rcgn: zcdb * nhlh
+zzcw: fjlf * lzbs
+wjrz: dzvl + jvcn
+vnfm: hjbn + wdwq
+mncn: 5
+scqr: lsdr * tpzs
+clgf: 14
+fhrt: zzvh + vzzr
+msbh: fwgf * tplj
+jghw: rvnh + pzln
+djmm: 13
+msww: ghnr + jpsj
+wjdg: 20
+jpjq: 2
+tqjs: 2
+hlzm: djjh * mdpq
+gnqt: vrgz * ptqt
+nlnv: 2
+cdln: 2
+htvb: 5
+lbsl: lhjb * hwrn
+tnwl: qldz / lswd
+bbps: 3
+nzbr: 13
+dldc: 9
+ljhb: mrpr + vbrl
+zmfz: scww + ncjq
+mmtw: ldnm * ghdl
+htwn: 5
+ztjv: wmjg + csrv
+nfqv: hgdw - rdbb
+mfcp: 2
+zsfb: 11
+vmjq: hhsm * jmpz
+cpbm: 8
+sthw: mgtl * rrgb
+zmqm: zhcb + rtwr
+cqht: tmlm + sqrr
+vnvg: 3
+dcrb: qnzd * wqtl
+lbnq: jrwb + zdtn
+hbvj: pnwg + qwpp
+fsrf: 4
+vljd: tjcv + rggq
+rsqc: 3
+dgrv: mvsd * qgnn
+chvf: bmbl * cnmh
+znrw: 12
+znft: 5
+vnzs: 2
+lpnd: dtmt * lscc
+vwzl: fdft * lhcg
+dclg: dppt * dbsr
+lhcg: 2
+tqzr: 2
+hzrn: shtj + zjnt
+jhwz: 3
+zrjs: bsds - sthb
+nwtz: vmvm * gbzz
+gwbm: rjqb + vgzf
+zqnm: 2
+nwcg: 5
+rfwd: 5
+zgff: 10
+gcfg: 2
+ttbp: 3
+hnbj: 2
+mwvm: 2
+nwmg: jclw * zsln
+rgdg: srhq * bhrd
+zrwl: fdjg + gdzb
+vmld: ntmt + fmqr
+wmjg: zlsz * zzcw
+pdgv: zjhc * gtfs
+zzsw: 1
+tfdb: 20
+sgbm: 2
+bpbl: hfmf * zjjn
+trqs: 9
+trvl: 17
+crts: 2
+fvnd: 2
+bzzn: fdfr * znft
+bprp: jjcm + gdzt
+gtzv: 2
+ltln: vgvj + gmgm
+wtqb: ffsz * jhmz
+cczm: 17
+zjsp: 6
+jzcz: 3
+wzjd: 15
+hndd: cccj * pqdg
+wzjm: frqm + wjgl
+fqln: rgpw + pvzs
+hljd: ffjw + pdgr
+zflr: 2
+ldmq: rlrg * nvsn
+hwrn: vfpp - tsrs
+cvbs: fsqn + vfvs
+gsmh: tdpg + vpch
+czdv: dzwv * cgpq
+svgt: lrzb * tfwd
+jmfm: sgbm * dhjm
+fglw: bsgt + vnhg
+ddww: 9
+pjqz: zhhf * rtfz
+gwzb: 6
+qmjf: jlhm + wzgc
+fdjg: rsdc * wlpv
+bsmg: 17
+sqhq: cdpw + zgff
+zltt: nmst + prwt
+wffn: vnfm * tcbt
+ftzh: vnjm * schb
+mzpd: pdps + nzsf
+tnlv: 19
+wwmj: hcpj + jcbn
+qvqw: 8
+snsq: zgrr * ltql
+cmfb: npmz / lhtm
+llwq: 6
+ljgd: gfdv + hrnl
+cfjh: jvcq * qptv
+bttt: 2
+lfnl: bgcm - hwnf
+hqcg: qvvw * qjtv
+mtwj: wjvt + qzzb
+qswz: qjtz + fsjw
+fcjn: 5
+phlr: jvjf * mnzf
+cbbc: 2
+mzgc: mrfh + rgdt
+hbpc: fzjb * fqth
+tmlm: brqj + brqr
+vfbg: pnpf + lbzm
+hqvt: 2
+lpmp: 2
+zdnp: 5
+ptqt: tgsc + ttsm
+wlwt: btcl + tbnn
+hvrt: 11
+rvdt: 2
+ffhv: 2
+lcjn: lbtn * fphq
+zmtw: 2
+wgdv: 3
+vdwc: fgmz * zmzl
+cggl: mwzh + djjl
+dngp: 10
+nvwn: 4
+sddd: tgsq * ccqs
+jclw: fpmh - dnml
+wmdw: 2
+hvgr: 2
+wnmf: 20
+smlp: gpqw + bdqh
+zflc: 2
+lrzb: zrwv * bcrq
+gfdg: 3
+rjtp: 7
+nmpz: qfjp + znmv
+gnnp: vwzl + czdv
+mnzs: 3
+lhjb: 2
+tqgp: fgfz * tfhw
+hqjv: 3
+chtf: nzbj * nvtq
+csdj: zqlm + ldmq
+zwwr: 2
+qfbm: qszn * slmc
+bvdf: 10
+qcpr: 2
+cfzq: fdgz + jcpr
+crzb: tpsg / rsdz
+mldl: 4
+mhnn: 7
+qrms: zpqz + slmn
+zjhc: 2
+tbfd: dpzb + vvdq
+qnzm: jgbq + sngv
+jgbq: hbnt * whsz
+blbw: 6
+vhtl: gvsc * fnlt
+zdjg: glpd + hgsg
+pqnw: 2
+pszh: 5
+jhmj: 2
+qdcd: 3
+rtrq: tmqv * zmfz
+blgt: 12
+zfgn: 4
+tdpp: 3
+wzvv: cbnf + pqjw
+mjbv: 7
+lbcm: qrnd * dqvs
+vjhl: 9
+gjnv: 7
+bqbd: 3
+bfmp: 2
+dhtr: 11
+mscg: 4
+jrfv: mbnl + mljs
+rrqw: 6
+zfbg: 2
+wnsh: 6
+cblb: rdrw * qsrr
+dhvq: rmgz * drzl
+nfmq: wclj * dlzc
+tbnz: 6
+bqww: mdhv + sdtq
+tcbt: 4
+dnjf: rmqz * bpfj
+vlns: 7
+hzqb: dhrt * svgt
+fzqq: fjfl * cvmb
+mbvv: qbdz * cnsd
+hcrv: 3
+wvdp: 2
+fbfb: 15
+mpsv: rlrm - qqmn
+grtn: hbcn + jhmd
+btjw: thrg + gnsv
+rrtd: 2
+cgqz: zmqm * gcfl
+rgzj: ftzh - stdd
+gwgf: hzqb + rsjp
+vgzf: gqll + sczl
+gdpp: nflg * fmmn
+nflg: 7
+gcdc: 2
+lvct: wlwh * rdvd
+bsvl: zwjb + qlrt
+nltn: 3
+vmqm: 2
+gqwq: 3
+lsdp: vcsv / bzmt
+ghwj: 5
+rnqp: 10
+czth: 4
+lrpc: 2
+wcmm: 18
+pwmq: rthz + hcll
+mnhz: czth * tnrq
+pjbm: 1
+fznm: 20
+zdtn: sclj * pjqz
+zpvh: csdj + vdzm
+zjsw: 6
+ffgm: lhqr / mnhz
+prvb: 3
+zcbb: 17
+gjlr: 7
+mvvr: 2
+wprs: 1
+zfpj: 3
+dqgf: 3
+fgmz: 6
+fhpt: 5
+bqwh: hzjs * wjlt
+wlwh: dlnq + tgdr
+bncr: 3
+tbsj: 7
+rdng: 3
+drtg: dddp / rvns
+vfvs: lvzp * vvsg
+lszh: cjcf + wftp
+bvlr: 3
+lflq: 2
+mwzh: 1
+dnml: 2
+sttq: 1
+gznp: 3
+wlfl: lmcm - fcjn
+pcfh: 5
+csrv: zdjg * szgm
+zfzn: 11
+hqtc: tlgn * tqjc
+shqb: pqzp - rnjn
+flwb: jlgs * mlbm
+vzzr: 5
+dsbl: 2
+fvhh: 5
+tgsc: 5
+htdl: vqls * nwcg
+bfpz: ndrt + ljbw
+qwbz: cmfb * mvvz
+bwdm: 1
+mqvs: 4
+dgtr: 2
+thml: ggnz * qmvw
+hvjf: 3
+ghzt: dztv * fhdp
+qghb: 5
+cqjc: lrlp * vgmn
+dqvs: 3
+qjhs: 11
+hfmf: 8
+hbqn: lfsj * tzws
+nvpt: 3
+lgzl: 2
+rqnr: llbr * mbtp
+rpnd: 13
+hqtl: 20
+hjmc: ghwj * zvdp
+vzhs: dfwj * sppd
+qgjb: 2
+mqrg: frvv * wlvq
+gnwb: 2
+gshm: 2
+ldzw: jlhw + gqsp
+qwhd: 7
+btcl: 12
+nbts: 4
+hbcn: 3
+jgfc: ghzt + wtjh
+wpdw: cgsq + lntd
+fptm: ncpr / jmmb
+vmvm: 3
+hcnt: 4
+ltql: znmm / drqd
+qpmj: 7
+dzsc: rcsd + lwdc
+qlzv: 4
+pznc: pjqw + zfvg
+bmtd: 5
+hnzn: zbrc * cfzq
+lgdv: jsss * jjgq
+sczl: rnwh * vjlb
+ggjq: 4
+wshb: 3
+nzcw: 3
+jsss: 14
+mrtg: bbsw * mzpd
+cbzz: tbcl + hlhw
+vtnz: hbfq * vzwb
+bmpz: frvj + nqrv
+stdw: fvzd * mpsp
+ltgv: bfsn * gtmm
+mzpq: djmm * nwtn
+vpgr: dqmt / ffvb
+lwtd: 3
+vjqc: 1
+mrbs: 2
+jmrj: 4
+cgmt: snhp + bvlr
+fgmm: vqrs + vhnp
+hjqp: tsfn * gfvc
+zjjn: 20
+sjlf: hljd * dgtr
+tnrq: 2
+frvj: 3
+rggq: jpnd + znrw
+lwdc: bgfv / hqjd
+vbzr: 12
+sppd: 3
+rqnn: 2
+rhbn: 3
+rnpg: 2
+hrcn: qzgt * wjdg
+nsrf: 2
+zhzg: ffgm * srtg
+nsmz: hqjv * nslj
+bjbd: pnlp / vnlh
+hcfv: sthw * lrfj
+qghw: qstb * trht
+brqj: wvdp * hhbg
+wcgm: 3
+vcvn: 19
+dzwv: 7
+brqr: tqgp / hcqp
+vqls: 5
+stdd: 3
+ldtz: 2
+vtpw: cnrm * nwlg
+pptw: 13
+fczr: 3
+cbmr: 6
+fgbv: 3
+nmhb: dnjf + fvbf
+clvj: 2
+ndpr: znzc * fdqr
+btdf: htls + qrms
+wlhz: 8
+fpzn: cvbs + mntb
+zzwq: ncgf * rtsb
+gpss: 7
+jntf: 3
+dvvw: vmbp + twjb
+jpmn: nldw * vlfb
+wdwq: dclg * jjqz
+vmhw: 16
+cbjm: dtdw * ntpm
+qssn: 9
+phnc: 18
+wrvb: 8
+gfgg: 5
+zqzg: pbqr + pdgv
+pjcr: prqf + mthr
+rpct: jvvm * mfvr
+gfmv: cdqz / cjmt
+gfvc: tcdd * cncs
+chhz: 1
+rhsn: zbnw + rzcw
+lpsq: 14
+zgrr: 19
+gbdb: mstm * gmns
+dqnt: gtcr - ttlc
+dqmt: vngt * zgwz
+rprh: 10
+cwbn: dbtd + slps
+mqfd: 3
+fbbf: 4
+ntqv: zzsw + mqss
+mvsd: 2
+dlgz: jfbd + nftc
+wptn: qdrj * gnnp
+nrsc: dcms + pvsc
+cmqn: 10
+ppmg: hzzp + slmm
+gzcg: znrr + zmdq
+lvms: tssn + cjmf
+hgst: 5
+gvsc: ddjw * pdch
+qdfn: 5
+tgng: tzld * hvgr
+nnnv: 3
+zgwz: 2
+fprd: 3
+dgzl: zvhr + vlfn
+shpm: cnzt / plqt
+fnlt: nzcw * fqtw
+wzpg: qssn * zqnb
+lwsn: 4
+lsdr: jhmj * pcgl
+gtbj: nmhp + jdmq
+zqfb: lgnm + gmds
+ntmt: 11
+tnll: vmpw * fngv
+wpwm: 5
+qqst: 2
+nrps: 5
+qgqd: qgbd + twzw
+crjv: 7
+wjqg: 2
+zzll: wqmt * llqq
+tttg: 14
+tlwh: 2
+lprc: 17
+qdml: 6
+lzpm: cwjr * wvcs
+qrnd: dqsq * zqnm
+qqtl: crzs * sclz
+hffv: 4
+fdhw: 3
+rjfv: btjw + lvms
+rlrb: 5
+sldm: 6
+twjb: 1
+dtsq: 16
+bvsr: gnwf + hcdv
+wvzc: rdlg * sqhq
+sclz: 6
+vzsp: cmnw + qqtl
+srtp: 6
+tdff: ldtz * pwpv
+zqlm: 5
+srbt: 2
+llmr: gczv + nzcg
+bbgp: drjw * bhrs
+hswb: wfdw * tbsp
+hzhb: swwz - dqnt
+dcms: zcpz - lqbt
+frcp: gfgg * zsql
+fffn: 16
+jlzd: 3
+hfmp: dbvq * zsfb
+cdlg: 9
+pcph: jgfc * jqvr
+sqrr: fdcp * brlj
+gcqz: rprh * mfnj
+vfht: 3
+hvzd: rszr * dvgt
+nrmd: 5
+nmzl: 18
+lwhr: 5
+drnz: trbj / nnhc
+nfqq: 3
+zbrc: 3
+hsbd: 7
+bnlt: mgsg * gjzd
+ccqb: qtsm + mhcs
+rdlg: 7
+wljq: 2
+dppt: hrcn + lrwt
+zqhw: 3
+bnds: sgpd * pdbg
+brfp: cbtb * mzvs
+gnjf: 3
+fnfr: 2
+thzm: nqrh * cmsg
+lflv: 3
+mghc: 3
+ddpc: wlbn + fscq
+zjwl: 2
+vmfl: bqwb * mwdf
+cvbl: drbd + gqgp
+lvsj: mcgh - hgrq
+brdv: nfsl * lngl
+hbjm: vnzs * bhzq
+tzll: 18
+sgvw: 10
+vnjm: jmvn * lhfj
+dfjv: cdqb / sctl
+rlrm: vvtg * gtzf
+mftt: 3
+qdgc: 2
+nbwq: 2
+hqft: 16
+tczf: mbjb / ssrg
+qchv: 6
+shdv: fdww + clcl
+zvwq: zfbg * zfzn
+tcbh: nghz * wjrz
+blcq: 7
+cdpw: jhbb * trjj
+jrdv: 11
+qhdt: zfmj + vmjq
+fsvm: 1
+bhrd: 2
+nqrh: wdnf * mghc
+qzhb: 3
+vbvw: bprp - zvhw
+bsds: rtpp * bhdc
+jmpz: 3
+fscq: tdpp * zwqm
+dghl: 4
+fccp: dmtc * jhmp
+nllv: bqfz / mftt
+fmnm: 2
+qmvw: 7
+cjhm: thdv * jjcn
+vrsd: 3
+ddhd: lzft * mmjg
+bhrs: 3
+dgvb: srbj * dfmw
+sngv: 1
+nwls: pqbg * ncfh
+ndzq: 4
+qvjf: 4
+nlzl: twjr + wnsh
+vfjl: hvgh * vsts
+stzc: hllh * zvsh
+qftz: 4
+cljf: 4
+cgsq: hpvw + dbbr
+sqhd: 4
+tzhj: 2
+ggvn: nscv + drtg
+fvfp: 3
+cwjr: 2
+zcpb: fnpq + ctsw
+fwgf: 3
+nstv: 3
+bgdc: 3
+vnml: 18
+tcfc: 9
+vbhz: cqht * vcfl
+rnjn: 4
+frqm: 12
+hwsw: 2
+bwtd: 4
+jfzm: wcmm * tpfj
+bncn: 10
+znrr: 1
+rscb: mpsv + dbfz
+lwdw: zdqp * gcfg
+zrwv: 3
+llbr: 11
+tssn: fgmm * thml
+nfmm: 2
+gjlp: 5
+tdsb: 4
+fpmg: wpvg * fbjq
+qgjm: tvlf + qrlb
+hfnc: tmgd + qmvm
+mvvz: 2
+rmdd: dtdc + vdpv
+wwpc: fffn + zdnp
+vcnd: 2
+ncgf: 3
+dwhc: 4
+vtwr: sjlf / wngb
+bzgd: dfnr * stfd
+zwjf: 13
+bfzw: 4
+zqlr: 9
+pbqr: gjzs + dzpb
+ppqj: bqwr + rsll
+qtfs: 3
+dvrg: rqcn * fccp
+dlfh: pcph - jrqd
+hqhl: gshm * blcq
+zdrv: 4
+bhzq: 4
+dbpd: pgtd * wqdb
+dwmq: 6
+fwjt: 5
+qcvz: 7
+flcf: sqpc + lrpc
+shwp: 4
+gjwt: hfqz * cbbc
+bqwb: gshj - tpgm
+svhb: mmcd * sjvs
+gjfm: gvsl / sstr
+gtzf: 2
+lwsq: dfjv * gcdc
+twdn: 11
+vngt: chls + ntqv
+hppw: 8
+jcjj: 5
+gzhp: nwdc - vrst
+spln: jbbc + tzll
+jhbb: 3
+bfrv: rwgf * cwgf
+dbcb: 2
+wtpq: 2
+fcbr: 7
+pqvh: vqzj * pdvc
+nnhc: 2
+cmtt: wzjf * jqct
+lczz: 2
+cdtn: 9
+hszr: jmbh + qzhb
+srnp: qjbh + lwnc
+rtwr: wbvc * wtmc
+mgtl: 3
+nvtq: 7
+pwwt: vtwr * fvql
+pnpf: slwj + bggm
+vpdj: gtpw / qhns
+pwfl: 3
+qdlm: 2
+vsnw: pqcd * lwsn
+gqgp: vctw * lwtd
+ldwt: nzdw * frbn
+scvs: 6
+qtsm: gglj - dsfl
+msmz: 1
+zvsh: 16
+zdmq: 2
+frtn: 3
+mzvt: cwmr + jmrj
+cvld: nzss * qqjb
+mjcw: qtln * fvcl";
+
+    Dictionary<string, object> vars = new();
+    data.Replace("\r", "").Split("\n").ToList().ForEach(line => {
+        switch (line) {
+            case var s when Regex.Match(s, "(?<name>[a-z]+): (?<left>[a-z]+) (?<op>[+\\-*/]) (?<right>[a-z]+)") is Match { Success: true } m: {
+                    var name = m.Groups["name"].Value;
+                    var left = m.Groups["left"].Value;
+                    var op = m.Groups["op"].Value;
+                    var right = m.Groups["right"].Value;
+                    vars[name] = (left, op, right);
+                    break;
+                }
+            case var s when Regex.Match(s, "(?<name>[a-z]+): (?<val>[0-9]+)") is Match { Success: true } m: {
+                    var name = m.Groups["name"].Value;
+                    var val = long.Parse(m.Groups["val"].Value);
+                    vars[name] = val;
+                    break;
+                }
+        }
+    });
+
+    Console.WriteLine(resolve("root"));
+    long resolve(string v) {
+
+        switch (vars[v]) {
+            case long i: return i;
+            case (string left, string op, string right):
+                var l = resolve(left);
+                var r = resolve(right);
+                //Console.WriteLine($"{v} = {left} {op} {right} = {l} {op} {r}");
+                return op switch {
+                    "+" => l + r,
+                    "-" => l - r,
+                    "*" => l * r,
+                    "/" => l / r
+                };
+            case var other: throw new Exception($"Unknown value {other}");
+        }
+    }
+
+    var (left, _, right) = ((string, string, string)) vars["root"];
+    vars["humn"] = 0L;
+    var (l, r) = (resolve(left), resolve(right));
+    while(l != r) {
+        Console.WriteLine($"humn = {(long)vars["humn"]}");
+        Console.WriteLine($"{l} != {r}");
+
+        vars["humn"] = long.Parse(Console.ReadLine());
+
+        (l, r) = (resolve(left), resolve(right));
+    }
+    Console.WriteLine($"{l} == {r}");
+
+}
+
+p16();
+
+
+interface Inode {
+    int size { get; }
+}
+record File(int size) : Inode {
+
+}
+record Dir(string path) : Inode {
+    public Dir parent = null;
+    public Dictionary<string, Inode> contents = new();
+
+    public int size => contents.Values.Sum(v => v.size);
+
+    public IEnumerable<Dir> GetDirs() {
+        if(size <= 100000) {
+            yield return this;
+        }
+        foreach(var dir in contents.Values.OfType<Dir>().SelectMany(d => d.GetDirs())) {
+            yield return dir;
+        }
+    }
+    public IEnumerable<Dir> GetTree() {
+        yield return this;
+        foreach (var dir in contents.Values.OfType<Dir>().SelectMany(d => d.GetTree())) {
+            yield return dir;
+        }
+    }
+}
+
 static class A {
     public static IEnumerable<(T, T, T)> Chunk<T>(this T[] t) {
         for(int i = 0; i < t.Length; i += 3) {
@@ -11490,5 +15665,10 @@ static class A {
         var parts = s.Split("-");
         var start = int.Parse(parts[0]);
         return Enumerable.Range(start, int.Parse(parts[1]) - start + 1);
+    }
+
+    public static void Deconstruct<T>(this T[] items, out T t0, out T t1) {
+        t0 = items.Length > 0 ? items[0] : default(T);
+        t1 = items.Length > 1 ? items[1] : default(T);
     }
 }
